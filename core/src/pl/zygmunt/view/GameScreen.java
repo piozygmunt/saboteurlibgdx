@@ -11,8 +11,6 @@ import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver.Resoluti
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -136,7 +134,6 @@ public class GameScreen implements Screen
 		ResolutionFileResolver resolver = new ResolutionFileResolver(new InternalFileHandleResolver(), resolutions);
 		assetManager.setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
 
-		System.out.println("Wybrany : " + ResolutionFileResolver.choose(resolutions).folder);
 
 		assetManager.load(View.assetsFilePath, TextureAtlas.class);
 		assetManager.finishLoading();
