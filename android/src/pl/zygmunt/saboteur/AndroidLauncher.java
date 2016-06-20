@@ -11,6 +11,12 @@ public class AndroidLauncher extends AndroidApplication {
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		
+		config.disableAudio = true;
+		config.useAccelerometer = false;
+		config.useCompass = false;
+		config.useGyroscope = false;
+		
 		initialize(new Saboteur(), config);
 	}
 }
