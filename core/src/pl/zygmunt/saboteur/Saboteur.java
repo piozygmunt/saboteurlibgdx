@@ -28,7 +28,8 @@ public class Saboteur extends Game
 	public void create()
 	{
 		GameProperties.setAmountOfPlayers(5);
-
+		GameProperties.setHumanPlayer(true);
+		
 		bq = new LinkedBlockingQueue<ApplicationEvent>();
 		view = new View(bq);
 		model = new Model();

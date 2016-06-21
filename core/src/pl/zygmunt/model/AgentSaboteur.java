@@ -242,26 +242,6 @@ public class AgentSaboteur extends Agent
 		// karta blokujaca
 		else if (card instanceof BlockCard)
 		{
-			/*if (sabotage_openly)
-			{
-				double suspicion[] = model.getSuspicion(id);
-				for (int i = 0; i < GameProperties.numberOfPlayers; i++)
-				{
-					if ((id + i) % GameProperties.numberOfPlayers != suspicion[1]
-							&& players[(id + i) % GameProperties.numberOfPlayers].getBlocked() == false)
-					{
-						score.setScore(8);
-						score.setPlayerIDTarget((id + i) % GameProperties.numberOfPlayers);
-					}
-				}
-			}
-			else
-			{
-				score.setScore(0);
-				score.setPlayerIDTarget(0);
-			}*/
-			
-			
 			if(sabotage_openly)
 			{
 			HashSet<Integer> possible_saboteurs = new HashSet<Integer>();
@@ -319,7 +299,7 @@ public class AgentSaboteur extends Agent
 						if (board[i][j] != null && !(board[i][j] instanceof GoalCard)
 								&& !(board[i][j] instanceof StartCard))
 						{
-							currentValue = calculateDeleteScore(i, j, board[i][j], board);
+							currentValue = calculateRemovalScore(i, j, board[i][j], board);
 							if (currentValue > score.getScore())
 							{
 								score.setScore(currentValue);
@@ -398,6 +378,7 @@ public class AgentSaboteur extends Agent
 				{
 					diffX = Math.min(Math.abs(x - 4), Math.min(Math.abs(x - 6), Math.abs(x - 8)));
 					diffY = Math.abs(y - 10);
+					// jesli jestesmy blisko kart celu sabotujemy otwarcie
 					if (diffX + diffY < 4)
 					{
 						sabotage_openly = true;
@@ -406,6 +387,7 @@ public class AgentSaboteur extends Agent
 				}
 			}
 		}
+		// jesli jestesmy juz podejrzewani - sabotujemy otwarcie
 		if (model.getSuspected(super.getID()))
 		{
 			sabotage_openly = true;
@@ -436,23 +418,12 @@ public class AgentSaboteur extends Agent
 				if (Common.checkIfCardCanBePlaced(board, pathcard, i, j))
 				{
 
-					boolean[][] recursionBoard = new boolean[13][13];
-					for (int o = 0; o < 13; o++)
-					{
-						for (int p = 0; p < 13; p++)
-						{
-							recursionBoard[o][p] = false;
-						}
-					}
 					board[i][j] = pathcard;
-					if (Common.checkIfCardCanBePlaced(board, pathcard, i, j))
+					currentValue = calculatePathScore(i, j, pathcard, board);
+					if (currentValue > score.getScore())
 					{
-						currentValue = calculatePathScore(i, j, pathcard, board);
-						if (currentValue > score.getScore())
-						{
 							score.setScore(currentValue);
 							score.setBoardTarget(new Point(i, j));
-						}
 					}
 					board[i][j] = null;
 				}
@@ -677,7 +648,7 @@ public class AgentSaboteur extends Agent
 	 *            Plansza do gry.
 	 * @return Liczbowa ocena.
 	 */
-	private double calculateDeleteScore(int x, int y, TunnelCard card, TunnelCard[][] board)
+	private double calculateRemovalScore(int x, int y, TunnelCard card, TunnelCard[][] board)
 	{
 		double cardScore = 0;
 		int goalX = 6;
@@ -826,40 +797,6 @@ public class AgentSaboteur extends Agent
 
 		return cardScore;
 	}
-
-	/*
-	 * private boolean linksToStart(TunnelCard[][] board, int xCoordinate, int
-	 * yCoordinate, boolean[][] shadowBoard) { Set<Direction> tunnels =
-	 * board[xCoordinate][yCoordinate].getOpenTunnels(); boolean[] links = new
-	 * boolean[4]; shadowBoard[xCoordinate][yCoordinate] = true;//remember that
-	 * recursion already evaluated this tile if(xCoordinate == 6 && yCoordinate
-	 * == 2) { return true; } else { if(yCoordinate < 12){
-	 * if(tunnels.contains(Direction.Down) &&
-	 * board[xCoordinate][yCoordinate+1]!=null &&
-	 * board[xCoordinate][yCoordinate+1].getOpenTunnels().contains(Direction.Up)
-	 * && shadowBoard[xCoordinate][yCoordinate+1]==false) {//check if there is a
-	 * card there links[0] = linksToStart(board, xCoordinate, yCoordinate+1,
-	 * shadowBoard);//Card at North } } if(yCoordinate > 0){
-	 * if(tunnels.contains(Direction.Up) &&
-	 * board[xCoordinate][yCoordinate-1]!=null &&
-	 * board[xCoordinate][yCoordinate-1].getOpenTunnels().contains(Direction.
-	 * Down) && shadowBoard[xCoordinate][yCoordinate-1]==false) {//check if
-	 * there is a card there links[1] = linksToStart(board, xCoordinate,
-	 * yCoordinate-1, shadowBoard);//Card at South } } if(xCoordinate > 0){
-	 * if(tunnels.contains(Direction.Left) &&
-	 * board[xCoordinate-1][yCoordinate]!=null &&
-	 * board[xCoordinate-1][yCoordinate].getOpenTunnels().contains(Direction.
-	 * Right) && shadowBoard[xCoordinate-1][yCoordinate]==false) {//check if
-	 * there is a card there links[2] = linksToStart(board, xCoordinate-1,
-	 * yCoordinate, shadowBoard);//Card at Right } } if(xCoordinate < 12){
-	 * if(tunnels.contains(Direction.Right) &&
-	 * board[xCoordinate+1][yCoordinate]!=null &&
-	 * board[xCoordinate+1][yCoordinate].getOpenTunnels().contains(Direction.
-	 * Left) && shadowBoard[xCoordinate+1][yCoordinate]==false) {//check if
-	 * there is a card there links[3] = linksToStart(board, xCoordinate+1,
-	 * yCoordinate, shadowBoard);//Card at Left } } } if(links[0] || links[1] ||
-	 * links[2] || links[3]){ return true; } return false; }
-	 */
 
 	public void updateKripke(Turn turn, int agentPlayed, TunnelCard[][] board, Player[] agents)
 	{

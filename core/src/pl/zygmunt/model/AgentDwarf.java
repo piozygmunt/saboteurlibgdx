@@ -584,7 +584,7 @@ public class AgentDwarf extends Agent
 	public void updateKripke(Turn turn, int agentPlayed, TunnelCard[][] board, Player[] agents)
 	{
 		model.update(turn, agentPlayed, board, agents);
-		model.updateSecondOrderBeliefs(super.getID());
+		model.updateBeliefsAccordingToLeastSuspiciousAgent(super.getID());
 	}
 
 }

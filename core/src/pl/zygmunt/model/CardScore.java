@@ -10,7 +10,20 @@ import pl.zygmunt.common.Point;
  */
 public class CardScore
 {
-
+	/**
+	 * Ocena liczbowa karty.
+	 */
+	private double score;
+	/**
+	 * Cel w postacie Id danego gracza.
+	 */
+	private int playerIDTarget;
+	/**
+	 * Cel w postaci wspolrzednych punktu na planszy.
+	 */
+	private Point boardTarget;
+	
+	
 	public double getScore()
 	{
 		return score;
@@ -55,16 +68,4 @@ public class CardScore
 		this.boardTarget = boardTarget;
 	}
 
-	/**
-	 * Ocena liczbowa karty.
-	 */
-	private double score;
-	/**
-	 * Cel w postacie Id danego gracza.
-	 */
-	private int playerIDTarget;
-	/**
-	 * Cel w postaci wspolrzednych punktu na planszy.
-	 */
-	private Point boardTarget;
 }

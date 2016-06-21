@@ -24,7 +24,20 @@ public class GameProperties
 	 * Poczatkowa ilosc kart u kazdego z graczy.
 	 */
 	public static int numberOfCards = 5;
+	/**
+	 * Czy w grze bierze udzial gracz poza agentami.
+	 */
+	public static boolean humanPlayer = true;
 
+	/**
+	 * Okreslenie czy w grze bierze udzial ludzki gracz.
+	 * @param value 
+	 */
+	public static void setHumanPlayer(boolean value)
+	{
+		humanPlayer = value;
+	}
+	
 	/**
 	 * Okreslenie ilosci graczy w danej rozgrywce i ustalenie ilosci kart
 	 * zgodnie z regulami gry.

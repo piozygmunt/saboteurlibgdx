@@ -115,6 +115,7 @@ public class MenuStage extends Stage
 
 		playerLabel = new Label("Player played", skin);
 		playersRoleLabel = new Label("Role: ", skin);
+		playersRoleLabel.setVisible(false);
 		roleLabel = new Label(null, skin);
 
 		updateFontSize(24);
@@ -254,6 +255,7 @@ public class MenuStage extends Stage
 	 */
 	public void setPlayerRole(final boolean saboteur)
 	{
+		playersRoleLabel.setVisible(true);
 		LabelStyle style = new LabelStyle(roleLabel.getStyle());
 
 		if (saboteur)

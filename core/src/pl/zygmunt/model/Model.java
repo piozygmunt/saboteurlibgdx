@@ -149,8 +149,6 @@ public class Model
 			}
 			else
 				board[i * 2 + 2][10] = new GoalCard(TunnelCard.downLeftUpRight, TunnelCard.downLeftUpRight, false);
-			if (board[i * 2 + 2][10] != null)
-				System.out.println("JEST COS");
 		}
 
 		saboteurs = new ArrayList<Boolean>();
@@ -165,11 +163,17 @@ public class Model
 			saboteurs.add(true);
 		}
 		Collections.shuffle(saboteurs);
+		
+		int j = 0;
+		if(GameProperties.humanPlayer)
+		{
+			players[0] = new Player(0);
+			players[0].setRole(saboteurs.get(0));
+			j = 1;
+		}
+			
 
-		players[0] = new Player(0);
-		players[0].setRole(saboteurs.get(0));
-
-		for (int j = 1; j < GameProperties.numberOfPlayers; j++)
+		for ( ; j < GameProperties.numberOfPlayers; j++)
 		{
 			if (saboteurs.get(j))
 				players[j] = new AgentSaboteur(j, possible_states);
@@ -179,7 +183,7 @@ public class Model
 
 		for (int k = 0; k < GameProperties.numberOfPlayers; k++)
 		{
-			for (int j = 0; j < GameProperties.numberOfCards; j++)
+			for (int i = 0; i < GameProperties.numberOfCards; i++)
 			{
 				players[k].getCards().add(deck.get(0));
 				deck.remove(0);
@@ -206,6 +210,7 @@ public class Model
 	{
 		double currentValue;
 		DefaultWeightedEdge edge;
+		int stateCounter = 0;
 		for (Player player : players)
 		{
 			if (player instanceof Agent)
@@ -224,11 +229,14 @@ public class Model
 							if (currentValue > ((Agent) player).getKripkeModel().getTreshold())
 							{
 								System.out.print(state1 + ", ");
+								stateCounter++;
 								break;
 							}
 						}
 					}
 				}
+				System.out.print("Liczba mozliwych stanow: " + stateCounter);
+				stateCounter = 0;
 
 				System.out.println("\n");
 				for (Player player2 : players)
@@ -250,11 +258,14 @@ public class Model
 									if (currentValue > ((Agent) player).getKripkeModel().getTreshold())
 									{
 										System.out.print(state1 + ", ");
+										stateCounter++;
 										break;
 									}
 								}
 							}
 						}
+						System.out.print("Liczba mozliwych stanow: " + stateCounter);
+						stateCounter = 0;
 						System.out.println("\n");
 					}
 				}
@@ -273,22 +284,15 @@ public class Model
 		builder.append(" )");
 
 		System.out.println("Prawdziwy stan gry: " + builder.toString());
-		;
-		System.out.println("\n");
 
-		System.out.println("\n");
 		if (gameResult.equals(GameResult.MinersWon))
 		{
 			System.out.println("Wygrali: kopacze");
-			System.out.println("\n");
 		}
 		else
 		{
 			System.out.println("Wygrali: sabotazysci");
-			System.out.println("\n");
 		}
-		System.out.println("\n");
-		System.out.println("\n");
 
 	}
 
@@ -300,8 +304,6 @@ public class Model
 	 */
 	public boolean checkForEndGame()
 	{
-		System.out.println("CHECK FOR END GAME");
-		System.out.println((board[goldCardPosition][10] != null));
 
 		boolean empty = true;
 		boolean[][] recursionBoard = new boolean[Common.initialColumns][Common.initialRows];

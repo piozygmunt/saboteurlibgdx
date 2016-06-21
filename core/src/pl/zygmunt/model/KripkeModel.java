@@ -91,7 +91,7 @@ public class KripkeModel
 				}
 			}
 			// w p.p.
-			else
+			else if(i == id && !saboteur)
 			{
 				for (State state1 : possibleStates)
 				{
@@ -99,7 +99,7 @@ public class KripkeModel
 					{
 						if (state1 != state2)
 						{
-							if (!state2.isPlayerSaboteur(i))
+							if (!state2.isPlayerSaboteur(id))
 							{
 
 								kripkeGraphs.get(i).setEdgeWeight(kripkeGraphs.get(i).addEdge(state1, state2),
@@ -109,6 +109,20 @@ public class KripkeModel
 							{
 								kripkeGraphs.get(i).setEdgeWeight(kripkeGraphs.get(i).addEdge(state1, state2), -100);
 							}
+						}
+					}
+				}
+			}
+			
+			else
+			{
+				for (State state1 : possibleStates)
+				{
+					for (State state2 : possibleStates)
+					{
+						if (state1 != state2)
+						{
+								kripkeGraphs.get(i).setEdgeWeight(kripkeGraphs.get(i).addEdge(state1, state2), 0);
 						}
 					}
 				}
@@ -148,10 +162,12 @@ public class KripkeModel
 							// jesli agent zagrywajacy jest kopaczem
 							if (!state2.isPlayerSaboteur(playerIDPlayed))
 							{
+								// wartosc dodatnia - prawdopodobnie zagrywal kopacz
 								if (updateValue > 0)
 								{
 									kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + updateValue);
 								}
+								// wartosc ujemna - sabotazysta
 								else
 								{
 									kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + 5 * updateValue);
@@ -214,8 +230,7 @@ public class KripkeModel
 		}
 	}
 
-	// update beliefs/relations for all agents in the model of the agent who
-	// called this function, as a result of the last turn
+
 	/**
 	 * Aktualizacja przekonan dla kazdego z graczy w modelu agenta ktory wywolal
 	 * funkcje na postawie ostatniego ruchu.
@@ -254,7 +269,7 @@ public class KripkeModel
 			// aktualizacji zalezy od odleglosci karty od celu
 			else
 			{
-				updateKripkeGraphs(playerIDPlayed, (-1 - closerToGoal(board[targetBoard.getX()][targetBoard.getY()],
+				updateKripkeGraphs(playerIDPlayed, (- distanceToGoal(board[targetBoard.getX()][targetBoard.getY()],
 						targetBoard, board, players[playerIDPlayed])));
 			}
 
@@ -264,7 +279,7 @@ public class KripkeModel
 		{
 			// aktualizacja zalezy od odleglosci od celu
 			TunnelCard pathCard = (TunnelCard) playCard;
-			updateKripkeGraphs(playerIDPlayed, closerToGoal(pathCard, targetBoard, board, players[playerIDPlayed]));
+			updateKripkeGraphs(playerIDPlayed, distanceToGoal(pathCard, targetBoard, board, players[playerIDPlayed]));
 
 		}
 
@@ -318,20 +333,20 @@ public class KripkeModel
 		// jesli zostala zagrana karta widoku
 		else if (playCard instanceof ViewCard)
 		{
-			boolean someoneKnows = false;
+			boolean someoneCheckedIt = false;
 			for (int i = 0; i < GameProperties.numberOfPlayers; i++)
 			{
 				// jesli wczesniej ktos sprawdzal ta karte
 				if (i != playerIDPlayed && players[i].knowsGoal((targetBoard.getX() / 2) - 2) != 0)
 				{
-					someoneKnows = true;
+					someoneCheckedIt = true;
 				}
 			}
 			double currentValue;
 			DefaultWeightedEdge edge;
 
 			// jesli karta byla sprawdzana wczesniej
-			if (someoneKnows)
+			if (someoneCheckedIt)
 			{
 				for (int i = 0; i < GameProperties.numberOfPlayers; i++)
 				{
@@ -396,94 +411,35 @@ public class KripkeModel
 							{
 								for (int j = 0; j < GameProperties.numberOfPlayers; j++)
 								{
+									if (i != j && players[i].knowsGoal((targetBoard.getX() / 2) - 2) != 0)
+									{
 
 									if (state1 != state2)
-									{
-
-										edge = kripkeGraphs.get(i).getEdge(state1, state2);
-										currentValue = kripkeGraphs.get(i).getEdgeWeight(edge);
-
-										// jesli gracza maja te sama role
-										if (state2.haveSameRole(i, j))
 										{
-											// jesli 'mowia' to samo
-											if (players[i].knowsGoal((targetBoard.getX() / 2) - 2) == players[j]
-													.knowsGoal((targetBoard.getX() / 2) - 2))
+	
+											edge = kripkeGraphs.get(i).getEdge(state1, state2);
+											currentValue = kripkeGraphs.get(i).getEdgeWeight(edge);
+	
+											// jesli gracza maja te sama role
+											if (state2.haveSameRole(i, j))
 											{
-												kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + 1);
-											}
-											else
-											{
-												kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - 2);
-											}
-										}
-										else
-										{
-											if (players[i].knowsGoal((targetBoard.getX() / 2) - 2) == players[j]
-													.knowsGoal((targetBoard.getX() / 2) - 2))
-											{
-												kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - 1);
-											}
-											else
-											{
-												kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + 1);
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-
-					// przekonanie innych agentow o graczu ktory zagrywal karte
-					// oraz innych graczy ktory widzieli karte tez musza byc
-					// zmienione
-					else
-					{ // relations of other agents about agentPlayed and another
-						// agent who has seen the goal card, have to be updated
-						// too
-						for (int j = 0; j < GameProperties.numberOfPlayers; j++)
-						{
-							if (j != i && j != playerIDPlayed
-									&& players[j].knowsGoal((targetBoard.getX() / 2) - 2) != 0)
-							{
-								if (players[j].knowsGoal((targetBoard.getX() / 2) - 2) == players[playerIDPlayed]
-										.knowsGoal((targetBoard.getX() / 2) - 2))
-								{
-									for (State state1 : possibleStates)
-									{
-										for (State state2 : possibleStates)
-										{
-											if (state1 != state2)
-											{
-												edge = kripkeGraphs.get(i).getEdge(state1, state2);
-												currentValue = kripkeGraphs.get(i).getEdgeWeight(edge);
-												if (state2.haveSameRole(j, playerIDPlayed))
+												// jesli 'mowia' to samo
+												if (players[i].knowsGoal((targetBoard.getX() / 2) - 2) == players[j]
+														.knowsGoal((targetBoard.getX() / 2) - 2))
 												{
 													kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + 1);
 												}
 												else
 												{
-													kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - 1);
+													kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - 2);
 												}
 											}
-										}
-									}
-								}
-								else
-								{
-									for (State state1 : possibleStates)
-									{
-										for (State state2 : possibleStates)
-										{
-											if (state1 != state2)
+											else
 											{
-
-												edge = kripkeGraphs.get(i).getEdge(state1, state2);
-												currentValue = kripkeGraphs.get(i).getEdgeWeight(edge);
-												if (state2.haveSameRole(j, playerIDPlayed))
+												if (players[i].knowsGoal((targetBoard.getX() / 2) - 2) == players[j]
+														.knowsGoal((targetBoard.getX() / 2) - 2))
 												{
-													kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - 2);
+													kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - 1);
 												}
 												else
 												{
@@ -508,7 +464,7 @@ public class KripkeModel
 	 * @param agentID
 	 *            Identyfikator gracza.
 	 */
-	public void updateSecondOrderBeliefs(int agentID)
+	public void updateBeliefsAccordingToLeastSuspiciousAgent(int agentID)
 	{
 		boolean reachable = false;
 		double[] leastSuspcion = getLeastSuspicious(agentID);
@@ -528,7 +484,7 @@ public class KripkeModel
 						edge = kripkeGraphs.get((int) leastSuspcion[1]).getEdge(state2, state1);
 						currentValue = kripkeGraphs.get((int) leastSuspcion[1]).getEdgeWeight(edge);
 
-						// jesli jest polaczenie
+						// jesli najmniej podejrzany agent uwaza ze stan jest mozliwy
 						if (currentValue >= getTreshold() && !state1.equals(state2))
 						{
 							reachable = true;
@@ -542,6 +498,7 @@ public class KripkeModel
 					{
 						edge = kripkeGraphs.get((int) leastSuspcion[1]).getEdge(state2, state1);
 						currentValue = kripkeGraphs.get((int) leastSuspcion[1]).getEdgeWeight(edge);
+						// ... wtedy zwieksz przekonania co do tego stanu
 						if (reachable)
 						{
 							kripkeGraphs.get(agentID).setEdgeWeight(edge, currentValue + 0.5);
@@ -670,17 +627,8 @@ public class KripkeModel
 		double theMostUnsuspicion[] = new double[] { -1, -1, -1 };
 		boolean reachable = false; // zmiene pomocnicza aby okreslic dostepnosc
 									// danego celu
-		double unsuspicions[] = new double[GameProperties.numberOfPlayers + 1]; // licznik
-																				// dla
-																				// kazdego
-																				// z
-																				// graczy
-																				// +
-																				// licznik
-																				// dla
-																				// wszystkich
-																				// dostepnych
-																				// stanow
+		// licznik dla kazdego z graczy + licznik wszystkich dostepnych stanow
+		double unsuspicions[] = new double[GameProperties.numberOfPlayers + 1]; 
 
 		// inicjalizacja
 		for (int i = 0; i < unsuspicions.length; ++i)
@@ -702,13 +650,9 @@ public class KripkeModel
 					if (currentValue >= getTreshold() && state1 != state2)
 					{
 						reachable = true; // stan sie osiagalny
-						unsuspicions[GameProperties.numberOfPlayers]++;// zwiekszamy
-																		// ilosc
-																		// wszystkich
-																		// dostepnych
-																		// stanow
-						break; // wiemy ze stan jest osiagalny wiec konczymy
-								// wew. petle
+						// zwiekszamy ilosc wszystkich osiagalnych stanow
+						unsuspicions[GameProperties.numberOfPlayers]++;
+						break; 
 					}
 				}
 			}
@@ -733,18 +677,8 @@ public class KripkeModel
 		// iterujemy po liczniku
 		for (int i = 0; i < GameProperties.numberOfPlayers; i++)
 		{
-			j = (i + agentID) % GameProperties.numberOfPlayers; // jesli bedzie
-																// wiecej niz 1
-																// gracz z tym
-																// samym
-																// poziomem,
-																// wybrany
-																// zostanie ten
-																// ktory
-																// wystepuje
-																// zaraz po
-																// zagrywajacym
-																// rgaczu
+			j = (i + agentID) % GameProperties.numberOfPlayers; 
+			// jesli bedzie wiecej niz 1 gracz z tym samym poziomem, wybrany zostanie ten ktory wystepuje zaraz po zagrywajacym graczu
 			// spradzenie wartosci, jesli jest bardziej 'niepodejrzany' to
 			// zmieniamy
 			if (unsuspicions[j] > theMostUnsuspicion[0])
@@ -771,7 +705,7 @@ public class KripkeModel
 	 *            Gracza zagrywajacy karte.
 	 * @return
 	 */
-	private int closerToGoal(TunnelCard tunnelCard, Point targetBoard, TunnelCard[][] board, Player player)
+	private int distanceToGoal(TunnelCard tunnelCard, Point targetBoard, TunnelCard[][] board, Player player)
 	{
 		boolean horizontalFit = false;
 		boolean verticalFit = false;

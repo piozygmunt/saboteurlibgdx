@@ -29,6 +29,7 @@ import pl.zygmunt.model.BlockCard;
 import pl.zygmunt.model.Card;
 import pl.zygmunt.model.DeblockCard;
 import pl.zygmunt.model.DemolishCard;
+import pl.zygmunt.model.GameProperties;
 import pl.zygmunt.model.GoalCard;
 import pl.zygmunt.model.Model;
 import pl.zygmunt.model.Player;
@@ -87,7 +88,7 @@ public final class Controller
 		eventDictionary.put(ButtonOkInfoClickedEvent.class, new ButtonOkInfoClickedStrategy());
 
 		view.updatePlayerPlayed(model.getActivePlayer().getID() + 1);
-		view.setPlayerRole(model.getActivePlayer().getRole());
+		if(GameProperties.humanPlayer ) view.setPlayerRole(model.getActivePlayer().getRole());
 
 		if (model.getActivePlayer() instanceof Agent)
 		{
@@ -573,7 +574,7 @@ public final class Controller
 			if (!(model.getActivePlayer() instanceof Agent))
 				view.drawCards(model.getActivePlayer().getCards());
 			view.updatePlayerPlayed(model.getActivePlayer().getID() + 1);
-			view.setPlayerRole(model.getActivePlayer().getRole());
+			if(GameProperties.humanPlayer ) view.setPlayerRole(model.getActivePlayer().getRole());
 			view.unblockScreen();
 
 		}

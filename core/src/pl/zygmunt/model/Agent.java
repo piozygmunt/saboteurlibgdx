@@ -27,7 +27,6 @@ public abstract class Agent extends Player
 	public Agent(int id)
 	{
 		super(id);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

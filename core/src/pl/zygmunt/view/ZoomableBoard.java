@@ -86,9 +86,6 @@ public class ZoomableBoard extends Stack
 	@Override
 	public float getPrefWidth()
 	{
-		System.out.println("scaleX : " + contentTable.getScaleX());
-		System.out.println("width : " + contentTable.getWidth());
-
 		return contentTable.getWidth() * contentTable.getScaleX();
 	}
 

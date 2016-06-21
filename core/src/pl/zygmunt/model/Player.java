@@ -169,7 +169,7 @@ public class Player
 	}
 
 	/**
-	 * Zwraca aktualny cel gracza. Jesli sabotazysta - sklada, jesli krasnal-
+	 * Zwraca aktualny cel gracza. Jesli sabotazysta - skala, jesli krasnal-
 	 * zloto.
 	 * 
 	 * @return
