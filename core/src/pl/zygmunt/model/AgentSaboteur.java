@@ -20,7 +20,7 @@ public class AgentSaboteur extends Agent
 	/**
 	 * Czy sabotujemy otwarcie.
 	 */
-	private boolean sabotage_openly;
+	private boolean sabotageOpenly;
 
 	/**
 	 * Kontruktor.
@@ -35,7 +35,7 @@ public class AgentSaboteur extends Agent
 		super(id);
 		treshold = 4;
 		model = new KripkeModel(id, true, possibleState);
-		sabotage_openly = false;
+		sabotageOpenly = false;
 	}
 
 	public Turn takeTurn(Player[] players, TunnelCard[][] board)
@@ -164,7 +164,7 @@ public class AgentSaboteur extends Agent
 		// jesli jest to karta blokowania
 		else if (card instanceof BlockCard)
 		{
-			if(sabotage_openly)
+			if(sabotageOpenly)
 			{
 				score = 7;
 			}
@@ -178,7 +178,7 @@ public class AgentSaboteur extends Agent
 		else if (card instanceof DeblockCard)
 		{
 			// jesli sabotujemy otwarcie
-			if (sabotage_openly)
+			if (sabotageOpenly)
 			{
 				score = 6;
 			}
@@ -242,7 +242,7 @@ public class AgentSaboteur extends Agent
 		// karta blokujaca
 		else if (card instanceof BlockCard)
 		{
-			if(sabotage_openly)
+			if(sabotageOpenly)
 			{
 			HashSet<Integer> possible_saboteurs = new HashSet<Integer>();
 
@@ -272,7 +272,7 @@ public class AgentSaboteur extends Agent
 		{
 			if (super.getBlocked())
 			{
-				if (sabotage_openly)
+				if (sabotageOpenly)
 				{
 					score.setScore(5);
 					score.setPlayerIDTarget(id);
@@ -290,7 +290,7 @@ public class AgentSaboteur extends Agent
 		else if (card instanceof DemolishCard)
 		{
 			double currentValue = 0;
-			if (sabotage_openly)
+			if (sabotageOpenly)
 			{
 				for (int i = 0; i < Common.initialColumns; i++)
 				{
@@ -347,16 +347,16 @@ public class AgentSaboteur extends Agent
 	/**
 	 * Zmiana postepowania - sabotujemy otwarcie badz nie.
 	 * 
-	 * @param explicit
+	 * @param sabotage
 	 */
-	public void setExplicit(boolean explicit)
+	public void setSabotageOpenly(boolean sabotage)
 	{
-		this.sabotage_openly = explicit;
+		this.sabotageOpenly = sabotage;
 	}
 
 	public boolean isSabotagingOpenly()
 	{
-		return sabotage_openly;
+		return sabotageOpenly;
 	}
 
 	/**
@@ -381,7 +381,7 @@ public class AgentSaboteur extends Agent
 					// jesli jestesmy blisko kart celu sabotujemy otwarcie
 					if (diffX + diffY < 4)
 					{
-						sabotage_openly = true;
+						sabotageOpenly = true;
 						return;
 					}
 				}
@@ -390,7 +390,7 @@ public class AgentSaboteur extends Agent
 		// jesli jestesmy juz podejrzewani - sabotujemy otwarcie
 		if (model.getSuspected(super.getID()))
 		{
-			sabotage_openly = true;
+			sabotageOpenly = true;
 		}
 	}
 
@@ -473,7 +473,7 @@ public class AgentSaboteur extends Agent
 		distance = Math.abs(goalX - x) + Math.abs(y - 10);
 
 		// jesli nie sabotujemy otwarcie
-		if (!sabotage_openly)
+		if (!sabotageOpenly)
 		{
 			// jesli na lewym polu jest karta konca
 			if (card.getOpenTunnels().contains(Direction.Left) && x > 0 && board[x - 1][y] instanceof GoalCard)
