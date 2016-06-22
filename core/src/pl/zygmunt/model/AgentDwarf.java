@@ -332,6 +332,7 @@ public class AgentDwarf extends Agent
 						{
 							recursionBoard[o][p] = false;
 						}
+					}
 
 						// umiejscowienie karty
 						board[i][j] = pathcard;
@@ -352,7 +353,6 @@ public class AgentDwarf extends Agent
 					}
 				}
 			}
-		}
 
 		return score;
 	}
