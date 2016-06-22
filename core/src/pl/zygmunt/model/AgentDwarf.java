@@ -227,6 +227,7 @@ public class AgentDwarf extends Agent
 						score.setPlayerIDTarget((int) suspicion[1]);
 						break;
 					}
+					// jesli nie jest zablokowany dodajemy do listy wykluczenia i szukamy jeszcze raz
 					else
 					{
 						possible_saboteurs.add((int) suspicion[1]);
@@ -266,7 +267,9 @@ public class AgentDwarf extends Agent
 			// jesli nie znamy celu
 			if (knowGoal[0] == 0)
 			{
+				// chcemy go poznac 
 				score.setScore(9);
+				//losujemy karte do sprawdzenia
 				Random rand = new Random();
 				int checkGoal = rand.nextInt(3) + 1;
 

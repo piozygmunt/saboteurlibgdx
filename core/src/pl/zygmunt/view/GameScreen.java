@@ -128,7 +128,9 @@ public class GameScreen implements Screen
 		style2.font = font;
 
 		this.assetManager = new AssetManager();
-
+		
+		
+		//wczytanie tekstur w zaleznosci o rozdzielczosci
 		Resolution[] resolutions = { new Resolution(320, 640, "800x400"), new Resolution(700, 1200, "1200x700"),
 				new Resolution(1000, 1920, "1900x1000"), };
 		ResolutionFileResolver resolver = new ResolutionFileResolver(new InternalFileHandleResolver(), resolutions);
@@ -189,8 +191,7 @@ public class GameScreen implements Screen
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		viewportUC.update(Gdx.graphics.getWidth() / 6 * 5, (int) (Gdx.graphics.getHeight() * (1 - verticalRatio)),
-				true); // set the currentWindow... variables in the resize
-						// method to keep proper ratio
+				true); 
 		viewportUC.apply(true);
 		userStage.act(delta);
 		userStage.draw();

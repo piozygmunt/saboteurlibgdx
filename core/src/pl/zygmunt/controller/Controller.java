@@ -90,6 +90,7 @@ public final class Controller
 		view.updatePlayerPlayed(model.getActivePlayer().getID() + 1);
 		if(GameProperties.humanPlayer ) view.setPlayerRole(model.getActivePlayer().getRole());
 
+		// jesli poczatkowy gracz to agent - plansza na caly ekran
 		if (model.getActivePlayer() instanceof Agent)
 		{
 			view.setNextPlayerButtonDisabled(false);

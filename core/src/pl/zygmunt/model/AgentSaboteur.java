@@ -242,6 +242,7 @@ public class AgentSaboteur extends Agent
 		// karta blokujaca
 		else if (card instanceof BlockCard)
 		{
+			// blokujemy tylko jak sabotujemy otwarcie
 			if(sabotageOpenly)
 			{
 			HashSet<Integer> possible_saboteurs = new HashSet<Integer>();
@@ -472,56 +473,9 @@ public class AgentSaboteur extends Agent
 		// odleglosc od celu
 		distance = Math.abs(goalX - x) + Math.abs(y - 10);
 
-		// jesli nie sabotujemy otwarcie
+		// jesli nie sabotujemy otwarcie- zachowujemy sie jak normalny kopacz
 		if (!sabotageOpenly)
 		{
-			// jesli na lewym polu jest karta konca
-			if (card.getOpenTunnels().contains(Direction.Left) && x > 0 && board[x - 1][y] instanceof GoalCard)
-			{
-				// jesli znamy cel i celem jest karta konc
-				if (knowGoal[0] == 1 && (x - 1) == goalX)
-				{
-					return 10;
-				}
-				else if (knowGoal[((x - 1) / 2) - 2] != 2)
-				{
-					if (numberOfOpenTunnels > 2)
-					{
-						return 10;
-					}
-					else
-					{
-						return 9;
-					}
-				}
-			}
-			if (card.getOpenTunnels().contains(Direction.Right) && x < 12 && board[x + 1][y] instanceof GoalCard)
-			{
-				if (knowGoal[0] == 1 && (x + 1) == goalX)
-				{
-					return 10;
-				}
-				else if (knowGoal[((x + 1) / 2) - 2] != 2)
-				{
-					if (numberOfOpenTunnels > 2)
-					{
-						return 10;
-					}
-					else
-					{
-						return 9;
-					}
-				}
-			}
-			if (card.getOpenTunnels().contains(Direction.Up) && y > 0 && board[x][y - 1] instanceof GoalCard)
-			{
-				verticalFit = true;
-			}
-			if (card.getOpenTunnels().contains(Direction.Down) && y < 12 && board[x][y + 1] instanceof GoalCard)
-			{
-				return 10;
-			}
-
 			if (x > goalX && card.getOpenTunnels().contains(Direction.Left) && board[x - 1][y] == null)
 			{
 				horizontalFit = true;
@@ -542,66 +496,6 @@ public class AgentSaboteur extends Agent
 			{
 				if (horizontalFit)
 				{
-					cardScore += 5;
-				}
-				else if (verticalFit)
-				{
-					cardScore += 4;
-				}
-				if (horizontalFit && verticalFit)
-				{
-					cardScore += 0.5;
-				}
-			}
-			else
-			{
-				if (verticalFit)
-				{
-					cardScore += 5;
-				}
-				else if (horizontalFit)
-				{
-					cardScore += 4;
-				}
-				if (horizontalFit && verticalFit)
-				{
-					cardScore += 0.5;
-				}
-			}
-
-			cardScore += numberOfOpenTunnels - 1;
-			cardScore += (19 - distance) / 9;
-			return cardScore;
-		}
-
-		// jesli nie ma otwartych tuneli
-		if (numberOfOpenTunnels == 0)
-		{
-			cardScore += 5;
-			if (x > goalX && x < 12 && card.getOpenTunnels().contains(Direction.Right) && board[x + 1][y] != null
-					&& board[x + 1][y].getOpenTunnels().contains(Direction.Left))
-			{
-				horizontalFit = true;
-			}
-			if (x < goalX && x > 0 && card.getOpenTunnels().contains(Direction.Left) && board[x - 1][y] != null
-					&& board[x - 1][y].getOpenTunnels().contains(Direction.Right))
-			{
-				horizontalFit = true;
-			}
-			if (y == 11 && card.getOpenTunnels().contains(Direction.Down) && board[x][y + 1] != null
-					&& board[x][y + 1].getOpenTunnels().contains(Direction.Up))
-			{
-				verticalFit = true;
-			}
-			if (y < 10 && y > 0 && card.getOpenTunnels().contains(Direction.Up) && board[x][y - 1] != null
-					&& board[x][y - 1].getOpenTunnels().contains(Direction.Down))
-			{
-				verticalFit = true;
-			}
-			if (Math.abs(goalX - x) > Math.abs(10 - y))
-			{
-				if (horizontalFit)
-				{
 					cardScore += 3;
 				}
 				else if (verticalFit)
@@ -613,30 +507,39 @@ public class AgentSaboteur extends Agent
 					cardScore += 0.5;
 				}
 			}
-
 			else
 			{
 				if (verticalFit)
 				{
-					cardScore += 5;
+					cardScore += 3;
 				}
 				else if (horizontalFit)
 				{
-					cardScore += 4;
+					cardScore += 2;
 				}
 				if (horizontalFit && verticalFit)
 				{
 					cardScore += 0.5;
 				}
 			}
-			cardScore += (19 - distance) / 9;
+
+			cardScore += numberOfOpenTunnels - 1;
+			cardScore += (19 - distance) / 5;
+			return cardScore;
+		}
+		// sabotujemy otwarcie - szukamy tylko kart tuneli bez otwartych drog
+		if (numberOfOpenTunnels == 0)
+		{
+			cardScore += 5;
+			// im wiekszy dystans tym lepiej
+			cardScore +=  distance / 5;
 		}
 
 		return cardScore;
 	}
 
 	/**
-	 * Ocena karty ktora ma zostac zniszczona.
+	 * Ocena karty ktora ma zostac zniszczona. Funkcja analogiczna jak ta obliczajaca ocene dla polozenia karty dla kopacza (sabotazysta chce usunac jak najlepsza karte)
 	 * 
 	 * @param x
 	 *            Wspolrzedna X.

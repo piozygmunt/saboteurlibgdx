@@ -90,8 +90,6 @@ public class BoardStage extends Stage
 		Cell<Actor> cell = board.getTable().getCells().get(y * Common.initialColumns + x);
 
 		final Actor new_actor = new Actor();
-		new_actor.setHeight(200);
-		new_actor.setWidth(150);
 
 		cell.setActor(new_actor);
 

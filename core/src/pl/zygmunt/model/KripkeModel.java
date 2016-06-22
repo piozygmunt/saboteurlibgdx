@@ -90,7 +90,7 @@ public class KripkeModel
 					}
 				}
 			}
-			// w p.p.
+			// jesli jestesmy kopaczem
 			else if(i == id && !saboteur)
 			{
 				for (State state1 : possibleStates)
@@ -114,6 +114,7 @@ public class KripkeModel
 				}
 			}
 			
+			// inicjujemy graf dla pozostalych graczys
 			else
 			{
 				for (State state1 : possibleStates)

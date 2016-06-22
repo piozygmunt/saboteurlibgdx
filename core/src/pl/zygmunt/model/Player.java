@@ -29,7 +29,8 @@ public class Player
 	 */
 	private boolean blocked;
 	/**
-	 * Tablica okreœlaj¹ca znane (lub nie) cele danego gracza.
+	 * Tablica okreœlaj¹ca czy gracz wie co kryja sie pod kartami celu. [0] - czy wie gdzie jest zloto ( 0 lub 1), [1-3] - oznaczaja poszczegolne karty celu
+	 * i przyjmuja wartosc 0- nie wiemy co jest pod karta, 1 - karta ze zlotem, 2 - karta bez zlota.
 	 */
 	private int[] knowGoal;
 

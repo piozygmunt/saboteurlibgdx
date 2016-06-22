@@ -74,8 +74,6 @@ public class ZoomableBoard extends Stack
 			for (int k = 0; k < Common.initialColumns; ++k)
 			{
 				final Actor actor = new Actor();
-				// actor.setHeight(200);
-				// actor.setWidth(150);
 				contentTable.add(actor).size(150 * Gdx.graphics.getWidth() / 960, 200 * Gdx.graphics.getHeight() / 540);
 
 			}

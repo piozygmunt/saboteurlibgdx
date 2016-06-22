@@ -102,6 +102,7 @@ public class Model
 	{
 
 		initialize();
+		printResults();
 
 	}
 
@@ -379,7 +380,7 @@ public class Model
 			}
 			if (playCard instanceof TunnelCard)
 			{
-				placePathTile((TunnelCard) playCard, targetBoard.getX(), targetBoard.getY());
+				placeTunnelCardOnBoard((TunnelCard) playCard, targetBoard.getX(), targetBoard.getY());
 			}
 			else if (playCard instanceof BlockCard)
 			{
@@ -443,7 +444,7 @@ public class Model
 	 * @param y
 	 *            Wspolrzedna Y planszy.
 	 */
-	public void placePathTile(TunnelCard pathCard, int x, int y)
+	public void placeTunnelCardOnBoard(TunnelCard pathCard, int x, int y)
 	{
 		board[x][y] = pathCard;
 
