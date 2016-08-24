@@ -28,7 +28,7 @@ public class Model
 	/**
 	 * Tablica graczy.
 	 */
-	private Player[] players = new Player[GameProperties.numberOfPlayers];
+	private List<Player> players;
 	/**
 	 * Aktualny rezultat gry.
 	 */
@@ -57,7 +57,7 @@ public class Model
 	/**
 	 * Wszystkie mozliwe stany (uklady sabotazystow).
 	 */
-	private List<State> possible_states = StatesGenerator.generateAllPossibleStates(GameProperties.numberOfPlayers);
+	private List<State> possible_states;
 
 	/**
 	 * 
@@ -65,7 +65,7 @@ public class Model
 	 */
 	public Player getActivePlayer()
 	{
-		return players[turns % GameProperties.numberOfPlayers];
+		return players.get(turns % GameProperties.numberOfPlayers);
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class Model
 	 */
 	public Player getPlayer(int playerID)
 	{
-		return players[playerID];
+		return players.get(playerID);
 	}
 
 	/**
@@ -102,7 +102,6 @@ public class Model
 	{
 
 		initialize();
-		printResults();
 
 	}
 
@@ -126,6 +125,8 @@ public class Model
 		gameResult = GameResult.GameInProgress;
 		lastPlayerTurn = null;
 		deck = DeckGenerator.generateDeck();
+		possible_states = StatesGenerator.generateAllPossibleStates(GameProperties.numberOfPlayers);
+		players = new ArrayList<Player>();
 
 		for (int i = 0; i < Common.initialColumns; i++)
 		{
@@ -168,8 +169,10 @@ public class Model
 		int j = 0;
 		if(GameProperties.humanPlayer)
 		{
-			players[0] = new Player(0);
-			players[0].setRole(saboteurs.get(0));
+
+			Player humanPlayer = new Player(0);
+			humanPlayer.setRole(saboteurs.get(0));
+			players.add(humanPlayer);
 			j = 1;
 		}
 			
@@ -177,16 +180,17 @@ public class Model
 		for ( ; j < GameProperties.numberOfPlayers; j++)
 		{
 			if (saboteurs.get(j))
-				players[j] = new AgentSaboteur(j, possible_states);
+				players.add(new AgentSaboteur(j, possible_states));
 			else
-				players[j] = new AgentDwarf(j, possible_states);
+				players.add(new AgentDwarf(j, possible_states));
 		}
 
 		for (int k = 0; k < GameProperties.numberOfPlayers; k++)
 		{
 			for (int i = 0; i < GameProperties.numberOfCards; i++)
 			{
-				players[k].getCards().add(deck.get(0));
+				//players[k].getCards().add(deck.get(0));
+				players.get(k).getCards().add(deck.get(0));
 				deck.remove(0);
 			}
 		}
@@ -325,7 +329,7 @@ public class Model
 		{
 			for (int j = 0; j < GameProperties.numberOfPlayers; j++)
 			{
-				if (players[j].getCards().isEmpty() == false)
+				if (players.get(j).getCards().isEmpty() == false)
 				{
 					empty = false;
 				}
@@ -348,7 +352,7 @@ public class Model
 	 */
 	public void removeCardFromPlayer(Card card, int playerID)
 	{
-		players[playerID].getCards().remove(card);
+		players.get(playerID).getCards().remove(card);
 	}
 
 	/**
@@ -384,11 +388,11 @@ public class Model
 			}
 			else if (playCard instanceof BlockCard)
 			{
-				block(players[agentTarget]);
+				block(players.get(agentTarget));
 			}
 			else if (playCard instanceof DeblockCard)
 			{
-				deblock(players[agentTarget]);
+				deblock(players.get(agentTarget));
 			}
 			else if (playCard instanceof DemolishCard)
 			{
@@ -396,7 +400,7 @@ public class Model
 			}
 			else
 			{
-				players[currentAgent].setGoal((targetBoard.getX() / 2) - 2, view(targetBoard.getX()));
+				players.get(currentAgent).setGoal((targetBoard.getX() / 2) - 2, view(targetBoard.getX()));
 			}
 		}
 
@@ -406,7 +410,7 @@ public class Model
 		 */
 		if (!deck.isEmpty())
 		{
-			players[currentAgent].getCards().add(deck.get(0));
+			players.get(currentAgent).getCards().add(deck.get(0));
 			deck.remove(0);
 		}
 
@@ -429,7 +433,7 @@ public class Model
 	public Turn nextTurn()
 	{
 		int currentPlayer = getActivePlayer().getID();
-		Turn turn = ((Agent) players[currentPlayer]).takeTurn(players, board);
+		Turn turn = ((Agent) players.get(currentPlayer)).takeTurn(players, board);
 		updateModel(turn);
 		return turn;
 	}
@@ -453,8 +457,8 @@ public class Model
 		{
 			if (!((GoalCard) board[i * 2 + 2][10]).isDiscovered() && isGoalCardReachable(i * 2 + 2))
 			{
-				for (int j = 0; j < players.length; ++j)
-					players[j].setGoal(i - 1, ((GoalCard) board[i * 2 + 2][10]).getGold());
+				for (int j = 0; j < players.size(); ++j)
+					players.get(j).setGoal(i - 1, ((GoalCard) board[i * 2 + 2][10]).getGold());
 			}
 		}
 

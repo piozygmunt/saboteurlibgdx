@@ -121,8 +121,15 @@ public class TunnelCard extends Card
 		{
 			newCardOpenTunnels.add(Direction.getOppositeDirection(direct));
 		}
+		
 		return new TunnelCard(newCardTunnels, newCardOpenTunnels);
 
+	}
+
+	@Override
+	public String toString()
+	{
+		return "TunnelCard [tunnels=" + tunnels + ", openTunnels=" + openTunnels + "]";
 	}
 
 }

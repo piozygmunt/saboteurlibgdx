@@ -7,6 +7,8 @@ import pl.zygmunt.events.ButtonOkInfoClickedEvent;
 import pl.zygmunt.events.ContinueGameEvent;
 import pl.zygmunt.events.ExitApplicationEvent;
 import pl.zygmunt.events.StartNewGameEvent;
+import pl.zygmunt.model.GameProperties;
+import pl.zygmunt.view.NewGameDialog;
 
 /**
  * Klasa reprezntujaca obiekt nasluchujacy na zdarzenia przychodzace z Dialogow.
@@ -20,6 +22,12 @@ public class DialogListener
 	 * Kolejka zdarzen do ktorej dodawana sa nowe zdarzenia.
 	 */
 	private BlockingQueue<ApplicationEvent> bq;
+	private NewGameDialog newGameDialog;
+
+	public void setNewGameDialog(NewGameDialog newGameDialog)
+	{
+		this.newGameDialog = newGameDialog;
+	}
 
 	public DialogListener(BlockingQueue<ApplicationEvent> bq)
 	{
@@ -61,9 +69,15 @@ public class DialogListener
 
 		else if (object.toString().equals("AcceptNewGame"))
 		{
+			StartNewGameEvent event = new StartNewGameEvent();
+			if(newGameDialog != null )
+			{
+				event.setHumanPlayer(newGameDialog.getIsHumanPlayer());
+				event.setNumberOfPlayers(newGameDialog.getAmountOfPlayers());
+			}	
 			try
 			{
-				bq.put(new StartNewGameEvent());
+				bq.put(event);
 			}
 			catch (InterruptedException e)
 			{
@@ -86,9 +100,15 @@ public class DialogListener
 
 		else if (object.toString().equals("OKNewGame"))
 		{
+			StartNewGameEvent event = new StartNewGameEvent();
+			if(newGameDialog != null )
+			{
+				event.setHumanPlayer(GameProperties.humanPlayer);
+				event.setNumberOfPlayers(GameProperties.numberOfPlayers);
+			}
 			try
 			{
-				bq.put(new StartNewGameEvent());
+				bq.put(event);
 			}
 			catch (InterruptedException e)
 			{

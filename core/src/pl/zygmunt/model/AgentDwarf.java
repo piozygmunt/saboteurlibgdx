@@ -36,7 +36,7 @@ public class AgentDwarf extends Agent
 	/**
 	 * Przedefiniowana funkcja odpowiedzialna na wykonanie ruchu.
 	 */
-	public Turn takeTurn(Player[] players, TunnelCard[][] board)
+	public Turn takeTurn(List<Player> players, TunnelCard[][] board)
 	{
 
 		List<Card> roatetdplayerCards = new ArrayList<Card>();
@@ -110,7 +110,7 @@ public class AgentDwarf extends Agent
 		return turn;
 	}
 
-	private void discard(Player[] players, TunnelCard[][] board)
+	private void discard(List<Player> players, TunnelCard[][] board)
 	{
 		double worstValue = 10;
 		int worstCard = 0;
@@ -135,12 +135,12 @@ public class AgentDwarf extends Agent
 	 * @param card
 	 *            Karta.
 	 * @param players
-	 *            Tablica graczy.
+	 *            Lista graczy.
 	 * @param board
 	 *            Plansza do gry.
 	 * @return Obiekt repezentujacy wycene danej karty.
 	 */
-	private CardScore rateCard(Card card, Player[] players, TunnelCard[][] board)
+	private CardScore rateCard(Card card, List<Player> players, TunnelCard[][] board)
 	{
 		return rateCard(card, players, false, board);
 	}
@@ -151,14 +151,14 @@ public class AgentDwarf extends Agent
 	 * @param card
 	 *            Karta.
 	 * @param players
-	 *            Tablica graczy.
+	 *            Lista graczy.
 	 * @param discard
 	 *            Czy dana karta ma byc usunieta.
 	 * @param board
 	 *            Plansza do gry.
 	 * @return Obiekt reprezentujacy wyecene danej karty.
 	 */
-	private CardScore rateCard(Card card, Player[] players, boolean discard, TunnelCard[][] board)
+	private CardScore rateCard(Card card, List<Player> players, boolean discard, TunnelCard[][] board)
 	{
 		CardScore score = new CardScore();
 		int id = super.getID();
@@ -186,7 +186,7 @@ public class AgentDwarf extends Agent
 				// znajdz najbardziej podejrzanego agenta
 				double suspicion[] = model.getSuspicion(id, possible_saboteurs);
 				// jesli nie jest zablokowany
-				if (players[(int) suspicion[1]].getBlocked() == false)
+				if (players.get((int) suspicion[1]).getBlocked() == false)
 				{
 					score.setScore(((suspicion[0] / suspicion[2]) * 10) - 2);
 					score.setPlayerIDTarget((int) suspicion[1]);
@@ -221,7 +221,7 @@ public class AgentDwarf extends Agent
 					double suspicion[] = model.getLeastSuspicious(id, possible_saboteurs);
 
 					// jesli jest zablokowany
-					if (players[(int) suspicion[1]].getBlocked())
+					if (players.get((int) suspicion[1]).getBlocked())
 					{
 						score.setScore(((suspicion[0] / suspicion[2]) * 10) - 2);
 						score.setPlayerIDTarget((int) suspicion[1]);
@@ -584,7 +584,7 @@ public class AgentDwarf extends Agent
 	}
 
 	@Override
-	public void updateKripke(Turn turn, int agentPlayed, TunnelCard[][] board, Player[] agents)
+	public void updateKripke(Turn turn, int agentPlayed, TunnelCard[][] board, List<Player> agents)
 	{
 		model.update(turn, agentPlayed, board, agents);
 		model.updateBeliefsAccordingToLeastSuspiciousAgent(super.getID());

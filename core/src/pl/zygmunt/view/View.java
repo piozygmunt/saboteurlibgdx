@@ -358,7 +358,7 @@ public class View
 	 * @param saboteur
 	 *            Rola gracza.
 	 */
-	public void setPlayerRole(boolean saboteur)
+	public void setPlayerRole(Boolean saboteur)
 	{
 		screen.getMenuStage().setPlayerRole(saboteur);
 	}
@@ -378,7 +378,9 @@ public class View
 	 */
 	public void showNewGameDialog()
 	{
-		NewGameDialog dialog = new NewGameDialog("", screen.getSkin(), new DialogListener(bq));
+		DialogListener dl = new DialogListener(bq);
+		NewGameDialog dialog = new NewGameDialog("", screen.getSkin(),dl);
+		dl.setNewGameDialog(dialog);
 		screen.blockScreen();
 		dialog.show(screen.getBoardStage());
 	}

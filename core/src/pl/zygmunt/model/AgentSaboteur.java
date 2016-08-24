@@ -38,7 +38,7 @@ public class AgentSaboteur extends Agent
 		sabotageOpenly = false;
 	}
 
-	public Turn takeTurn(Player[] players, TunnelCard[][] board)
+	public Turn takeTurn(List<Player> players, TunnelCard[][] board)
 	{
 
 		List<Card> roatetdplayerCards = new ArrayList<Card>();
@@ -111,12 +111,12 @@ public class AgentSaboteur extends Agent
 	 * Wyrzucenie karty z reki.
 	 * 
 	 * @param players
-	 *            Tablica graczy
+	 *            Lista graczy
 	 * @param board
 	 *            Plansza do gry.
 	 * @return Numer karty do odrzucenia.
 	 */
-	private int discard(Player[] players, TunnelCard[][] board)
+	private int discard(List<Player> players, TunnelCard[][] board)
 	{
 		double worstValue = 10;
 		int worstCard = 0;
@@ -125,7 +125,7 @@ public class AgentSaboteur extends Agent
 
 		for (int i = 0; i < handCards.size(); i++)
 		{
-			currentValue = rateCardDiscard(handCards.get(i), players, board);
+			currentValue = rateCardDiscard(handCards.get(i), board);
 			if (currentValue < worstValue)
 			{
 				worstValue = currentValue;
@@ -147,7 +147,7 @@ public class AgentSaboteur extends Agent
 	 *            Plansza do gry.
 	 * @return Wartosc liczbowa - wycena.
 	 */
-	private double rateCardDiscard(Card card, Player[] players, TunnelCard[][] board)
+	private double rateCardDiscard(Card card, TunnelCard[][] board)
 	{
 		double score = 0;
 		int[] knowGoal = super.getGoals();
@@ -222,7 +222,7 @@ public class AgentSaboteur extends Agent
 	 *            Plansza do gry.
 	 * @return Obiekt reprezentujacy wyecene danej karty.
 	 */
-	private CardScore rateCard(Card card, Player[] players, TunnelCard[][] board)
+	private CardScore rateCard(Card card, List<Player> players, TunnelCard[][] board)
 	{
 		CardScore score = new CardScore();
 		score.setScore(0);
@@ -252,7 +252,7 @@ public class AgentSaboteur extends Agent
 				// znajdz najmniej podejrzanego agenta
 				double suspicion[] = model.getLeastSuspicious(id, possible_saboteurs);
 				// jesli nie jest zablokowany
-				if (players[(int) suspicion[1]].getBlocked() == false)
+				if (players.get((int) suspicion[1]).getBlocked() == false)
 				{
 					score.setScore(8);
 					score.setPlayerIDTarget((int) suspicion[1]);
@@ -701,7 +701,7 @@ public class AgentSaboteur extends Agent
 		return cardScore;
 	}
 
-	public void updateKripke(Turn turn, int agentPlayed, TunnelCard[][] board, Player[] agents)
+	public void updateKripke(Turn turn, int agentPlayed, TunnelCard[][] board, List<Player> agents)
 	{
 		model.update(turn, agentPlayed, board, agents);
 		if (!isSabotagingOpenly())

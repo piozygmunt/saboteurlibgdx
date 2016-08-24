@@ -105,7 +105,7 @@ public final class Controller
 	 * Jesli jakies jest to jest odbiera i odpowiednio reaguje ( wybiera
 	 * strategie ).
 	 */
-	public void dzialaj()
+	public void processEvents()
 	{
 		while (true)
 		{
@@ -570,12 +570,24 @@ public final class Controller
 		@Override
 		void execute(ApplicationEvent evnt)
 		{
+			GameProperties.setAmountOfPlayers(((StartNewGameEvent) evnt).getNumberOfPlayers());
+			GameProperties.humanPlayer = ((StartNewGameEvent) evnt).isHumanPlayer();
 			model.initialize();
 			view.resetView();
 			if (!(model.getActivePlayer() instanceof Agent))
 				view.drawCards(model.getActivePlayer().getCards());
 			view.updatePlayerPlayed(model.getActivePlayer().getID() + 1);
-			if(GameProperties.humanPlayer ) view.setPlayerRole(model.getActivePlayer().getRole());
+			if(GameProperties.humanPlayer ) 
+			{
+				view.setPlayerRole(model.getActivePlayer().getRole());
+				view.setVerticalRatio(0.66);
+			}
+			else
+			{
+				view.setPlayerRole(null);
+				view.setVerticalRatio(1);
+				view.setNextPlayerButtonDisabled(false);
+			}
 			view.unblockScreen();
 
 		}

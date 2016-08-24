@@ -27,7 +27,7 @@ public class GameProperties
 	/**
 	 * Czy w grze bierze udzial gracz poza agentami.
 	 */
-	public static boolean humanPlayer = true;
+	public static boolean humanPlayer = false;
 
 	/**
 	 * Okreslenie czy w grze bierze udzial ludzki gracz.

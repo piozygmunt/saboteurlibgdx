@@ -70,6 +70,7 @@ public abstract class DeckGenerator
 		
 		List<Card> deck = new ArrayList<Card>();
 		deck.add(downLeftUpRight);
+		deck.add((TunnelCard)downLeftUpRight.clone());
 		deck.add(downUpRight);
 		deck.add(downLeftRight);
 		deck.add(leftUp);
@@ -123,6 +124,7 @@ public abstract class DeckGenerator
 		{
 			deck.add((ViewCard) viewCard.clone());
 		}
+		System.out.println("Deck size : "  + deck.size());
 		Collections.shuffle(deck);
 		return deck;
 	}

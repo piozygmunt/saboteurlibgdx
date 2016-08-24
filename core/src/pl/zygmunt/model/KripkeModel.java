@@ -30,6 +30,17 @@ public class KripkeModel
 	 * Wartosc okresla kiedy stan uznajemy za mozliwy.
 	 */
 	private double treshold = 0.0;
+	
+	private double changeDecisionFactor = 5.0;
+	
+	private double changeDecisionFactorTwoPlayers = 1.5;
+	
+	private double changeOnBlock = 2.0;
+	
+	private double changeOnDeblock = 1.0;
+	
+	private double changeOnView = 0.5;
+	
 
 	/**
 	 * Konstruktor.
@@ -78,7 +89,7 @@ public class KripkeModel
 							{
 								// stany sa bardziej prawdopodobne
 								kripkeGraphs.get(i).setEdgeWeight(kripkeGraphs.get(i).addEdge(state1, state2),
-										getTreshold() + 2);
+										this.treshold + 2);
 							}
 							else
 							{
@@ -103,7 +114,7 @@ public class KripkeModel
 							{
 
 								kripkeGraphs.get(i).setEdgeWeight(kripkeGraphs.get(i).addEdge(state1, state2),
-										getTreshold() + 2);
+										this.treshold + 2);
 							}
 							else
 							{
@@ -141,7 +152,7 @@ public class KripkeModel
 	 * @param updateValue
 	 *            Wartosc o jaka aktualizujemy grafy.
 	 */
-	public void updateKripkeGraphs(int playerIDPlayed, int updateValue)
+	public void updateKripkeGraphs(int playerIDPlayed, double updateValue)
 	{
 		double currentValue;
 		DefaultWeightedEdge edge;
@@ -159,6 +170,7 @@ public class KripkeModel
 						if (state1 != state2)
 						{
 							edge = kripkeGraphs.get(i).getEdge(state1, state2);
+							
 							currentValue = kripkeGraphs.get(i).getEdgeWeight(edge);
 							// jesli agent zagrywajacy jest kopaczem
 							if (!state2.isPlayerSaboteur(playerIDPlayed))
@@ -171,7 +183,7 @@ public class KripkeModel
 								// wartosc ujemna - sabotazysta
 								else
 								{
-									kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + 5 * updateValue);
+									kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + this.changeDecisionFactor * updateValue);
 								}
 							}
 							// jesli jest sabotazysta
@@ -183,7 +195,7 @@ public class KripkeModel
 								}
 								else
 								{
-									kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - 5 * updateValue);
+									kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - this.changeDecisionFactor * updateValue);
 								}
 							}
 						}
@@ -203,7 +215,7 @@ public class KripkeModel
 	 * @param updateValue
 	 *            Wartosc o ktora aktualizujemy model.
 	 */
-	public void updateKripkeGraphs(int player1ID, int player2ID, int updateValue)
+	public void updateKripkeGraphs(int player1ID, int player2ID, double updateValue)
 	{
 		double currentValue;
 		DefaultWeightedEdge edge;
@@ -224,7 +236,7 @@ public class KripkeModel
 						// jesli maja rozna role
 						else
 						{
-							kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - 1.5 * updateValue);
+							kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - this.changeDecisionFactorTwoPlayers * updateValue);
 						}
 					}
 				}
@@ -243,9 +255,9 @@ public class KripkeModel
 	 * @param board
 	 *            Aktualna plansza do gry.
 	 * @param players
-	 *            Tablica graczy bioracych udzial w rozgrywce.
+	 *            Lista graczy bioracych udzial w rozgrywce.
 	 */
-	public void update(Turn turn, int playerIDPlayed, TunnelCard[][] board, Player[] players)
+	public void update(Turn turn, int playerIDPlayed, TunnelCard[][] board, List<Player> players)
 	{
 		Card playCard = turn.getCard();
 		Point targetBoard = turn.getBoardTarget();
@@ -261,7 +273,7 @@ public class KripkeModel
 
 			// jesli usunieta karta nie zawierala otwartych tuneli (nie byla
 			// przydatna)
-			if (opened == false)
+			if (!opened)
 			{
 				updateKripkeGraphs(playerIDPlayed, 1);
 			}
@@ -270,8 +282,8 @@ public class KripkeModel
 			// aktualizacji zalezy od odleglosci karty od celu
 			else
 			{
-				updateKripkeGraphs(playerIDPlayed, (- distanceToGoal(board[targetBoard.getX()][targetBoard.getY()],
-						targetBoard, board, players[playerIDPlayed])));
+				updateKripkeGraphs(playerIDPlayed, - distanceToGoal(board[targetBoard.getX()][targetBoard.getY()],
+						targetBoard, board));
 			}
 
 		}
@@ -280,7 +292,7 @@ public class KripkeModel
 		{
 			// aktualizacja zalezy od odleglosci od celu
 			TunnelCard pathCard = (TunnelCard) playCard;
-			updateKripkeGraphs(playerIDPlayed, distanceToGoal(pathCard, targetBoard, board, players[playerIDPlayed]));
+			updateKripkeGraphs(playerIDPlayed, distanceToGoal(pathCard, targetBoard, board));
 
 		}
 
@@ -289,7 +301,7 @@ public class KripkeModel
 		{
 			// agentReceived zostala zablokowany => malo prawdopodobne ze gracz
 			// zagrywajacy ma ta sama role
-			updateKripkeGraphs(playerIDPlayed, playerIDReceived, -2);
+			updateKripkeGraphs(playerIDPlayed, playerIDReceived, -this.changeOnBlock);
 
 		}
 
@@ -300,7 +312,7 @@ public class KripkeModel
 			int numberOfPlayersBlocked = 0;
 			for (int i = 0; i < GameProperties.numberOfPlayers; i++)
 			{
-				if (players[i].getBlocked())
+				if (players.get(i).getBlocked())
 				{
 					numberOfPlayersBlocked++;
 				}
@@ -309,7 +321,7 @@ public class KripkeModel
 			// jesli zablokowany byl tylko jeden gracz
 			if (numberOfPlayersBlocked == 1)
 			{
-				updateKripkeGraphs(playerIDPlayed, playerIDReceived, 1);
+				updateKripkeGraphs(playerIDPlayed, playerIDReceived, this.changeOnDeblock);
 			}
 
 			// jesli bylo wiecej zablokowanych graczy
@@ -317,14 +329,14 @@ public class KripkeModel
 			{
 				// jeden z nich zostal odblokowany => wieksza szansa ze maja ta
 				// sama role
-				updateKripkeGraphs(playerIDPlayed, playerIDReceived, 2);
+				updateKripkeGraphs(playerIDPlayed, playerIDReceived, this.changeOnDeblock + 2*numberOfPlayersBlocked/GameProperties.numberOfPlayers);
 
 				// dla kazdego innego zablokowanego gracza
 				for (int i = 0; i < GameProperties.numberOfPlayers; i++)
 				{
-					if (i != playerIDPlayed && i != playerIDReceived && players[i].getBlocked())
+					if (i != playerIDPlayed && i != playerIDReceived && players.get(i).getBlocked())
 					{
-						updateKripkeGraphs(playerIDPlayed, i, -1);
+						updateKripkeGraphs(playerIDPlayed, i, -this.changeOnDeblock);
 					}
 				}
 			}
@@ -338,9 +350,9 @@ public class KripkeModel
 			for (int i = 0; i < GameProperties.numberOfPlayers; i++)
 			{
 				// jesli wczesniej ktos sprawdzal ta karte
-				if (i != playerIDPlayed && players[i].knowsGoal((targetBoard.getX() / 2) - 2) != 0)
+				if (i != playerIDPlayed && players.get(i).knowsGoal((targetBoard.getX() / 2) - 2) != 0)
 				{
-					someoneCheckedIt = true;
+					someoneCheckedIt = false;
 				}
 			}
 			double currentValue;
@@ -352,7 +364,7 @@ public class KripkeModel
 				for (int i = 0; i < GameProperties.numberOfPlayers; i++)
 				{
 					// dla kazdego gracza ktory zna zawartosc danej karty celu
-					if (i != playerIDPlayed && players[i].knowsGoal((targetBoard.getX() / 2) - 2) != 0)
+					if (i != playerIDPlayed && players.get(i).knowsGoal((targetBoard.getX() / 2) - 2) != 0)
 					{
 						for (State state1 : possibleStates)
 						{
@@ -370,32 +382,32 @@ public class KripkeModel
 									{
 										// jesli 'mowia' to samo tzn ze
 										// prawdopodobnie maja ta sama role
-										if (players[i]
-												.knowsGoal((targetBoard.getX() / 2) - 2) == players[playerIDPlayed]
+										if (players.get(i)
+												.knowsGoal((targetBoard.getX() / 2) - 2) == players.get(playerIDPlayed)
 														.knowsGoal((targetBoard.getX() / 2) - 2))
 										{
-											kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + 1);
+											kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + this.changeOnView);
 
 										}
 										// w p.p.
 										else
 										{
-											kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - 2);
+											kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - this.changeOnView);
 										}
 									}
 									// w stanach w ktorych maja rozne role
 									else
 									{
 										// jesli 'mowia' to samo
-										if (players[i]
-												.knowsGoal((targetBoard.getX() / 2) - 2) == players[playerIDPlayed]
+										if (players.get(i)
+												.knowsGoal((targetBoard.getX() / 2) - 2) == players.get(playerIDPlayed)
 														.knowsGoal((targetBoard.getX() / 2) - 2))
 										{
-											kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - 1);
+											kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - this.changeOnView);
 										}
 										else
 										{
-											kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + 1);
+											kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + this.changeOnView);
 										}
 									}
 								}
@@ -412,7 +424,7 @@ public class KripkeModel
 							{
 								for (int j = 0; j < GameProperties.numberOfPlayers; j++)
 								{
-									if (i != j && players[i].knowsGoal((targetBoard.getX() / 2) - 2) != 0)
+									if (i != j && players.get(j).knowsGoal((targetBoard.getX() / 2) - 2) != 0)
 									{
 
 									if (state1 != state2)
@@ -425,26 +437,26 @@ public class KripkeModel
 											if (state2.haveSameRole(i, j))
 											{
 												// jesli 'mowia' to samo
-												if (players[i].knowsGoal((targetBoard.getX() / 2) - 2) == players[j]
+												if (players.get(i).knowsGoal((targetBoard.getX() / 2) - 2) == players.get(j)
 														.knowsGoal((targetBoard.getX() / 2) - 2))
 												{
-													kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + 1);
+													kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + this.changeOnView);
 												}
 												else
 												{
-													kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - 2);
+													kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - this.changeOnView);
 												}
 											}
 											else
 											{
-												if (players[i].knowsGoal((targetBoard.getX() / 2) - 2) == players[j]
+												if (players.get(i).knowsGoal((targetBoard.getX() / 2) - 2) == players.get(j)
 														.knowsGoal((targetBoard.getX() / 2) - 2))
 												{
-													kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - 1);
+													kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - this.changeOnView);
 												}
 												else
 												{
-													kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + 1);
+													kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + this.changeOnView);
 												}
 											}
 										}
@@ -486,7 +498,7 @@ public class KripkeModel
 						currentValue = kripkeGraphs.get((int) leastSuspcion[1]).getEdgeWeight(edge);
 
 						// jesli najmniej podejrzany agent uwaza ze stan jest mozliwy
-						if (currentValue >= getTreshold() && !state1.equals(state2))
+						if (currentValue >= this.treshold && !state1.equals(state2))
 						{
 							reachable = true;
 							break;
@@ -562,7 +574,7 @@ public class KripkeModel
 				{
 					edge = kripkeGraphs.get(agentID).getEdge(state2, state1);
 					currentValue = kripkeGraphs.get(agentID).getEdgeWeight(edge);
-					if (currentValue >= getTreshold() && !state1.equals(state2))
+					if (currentValue >= this.treshold && !state1.equals(state2))
 					{
 						reachable = true;
 						suspicions[GameProperties.numberOfPlayers]++;
@@ -648,7 +660,7 @@ public class KripkeModel
 					currentValue = kripkeGraphs.get(agentID).getEdgeWeight(edge);
 
 					// czy jest galaz pomiedzy stanami
-					if (currentValue >= getTreshold() && state1 != state2)
+					if (currentValue >= this.treshold && state1 != state2)
 					{
 						reachable = true; // stan sie osiagalny
 						// zwiekszamy ilosc wszystkich osiagalnych stanow
@@ -706,12 +718,15 @@ public class KripkeModel
 	 *            Gracza zagrywajacy karte.
 	 * @return
 	 */
-	private int distanceToGoal(TunnelCard tunnelCard, Point targetBoard, TunnelCard[][] board, Player player)
+	private double distanceToGoal(TunnelCard tunnelCard, Point targetBoard, TunnelCard[][] board)
 	{
 		boolean horizontalFit = false;
 		boolean verticalFit = false;
 		int returnValue = 0;
 
+		int distance = Math.abs(10 - targetBoard.getY()) + Math.abs(6 - targetBoard.getX());
+		distance /= 19;
+		returnValue += 1-distance;
 		// jesli wspolrzedna Y jest mniejsza od 10 (powyzej kart celu) i karta
 		// posiada otwarty tunel na dol - mozna przejsc dalej
 		if ((targetBoard.getY() < 10 && tunnelCard.getOpenTunnels().contains(Direction.Down))
@@ -727,79 +742,25 @@ public class KripkeModel
 			horizontalFit = true;
 		}
 
-		// jesli karta nie przybliza nas do cele
+		// jesli karta nie przybliza nas do celu
 		if (!horizontalFit && !verticalFit)
 		{
 			return -2;
 		}
 
 		// jesli karta przybliza nas do celu pionowo
-		if (verticalFit)
+		if (verticalFit || horizontalFit)
 		{
 			returnValue += 1;
 		}
-
-		// sprawdzamy cel danego gracza
-		if (player.getGoal() == 1)
+		else
 		{
-			// jesli karta ma otwarty tunel skierowany w strone celu
-			if (targetBoard.getX() > 4 && tunnelCard.getOpenTunnels().contains(Direction.Left))
-			{
-				return returnValue + 1;
-			}
-			if (targetBoard.getX() < 4 && tunnelCard.getOpenTunnels().contains(Direction.Right))
-			{
-				return returnValue + 1;
-			}
-
-			// jesli nie ale pasuje pionowo
-			if (verticalFit)
-			{
-				return 1;
-			}
-
-			// wie gdzie jest cel ale nie zmierza w tym kierunku
-			return -1;
+			returnValue += 1.5;
 		}
 
-		// analogicznie
-		if (player.getGoal() == 3)
-		{
-			if (targetBoard.getX() > 8 && tunnelCard.getOpenTunnels().contains(Direction.Left))
-			{
-				return returnValue + 1;
-			}
-			if (targetBoard.getX() < 8 && tunnelCard.getOpenTunnels().contains(Direction.Right))
-			{
-				return returnValue + 1;
-			}
-			if (verticalFit)
-			{
-				return 1;
-			}
-			return -1;
-		}
+		
 
-		// analogicznie
-		if (player.getGoal() == 2)
-		{
-			if (targetBoard.getX() > 6 && tunnelCard.getOpenTunnels().contains(Direction.Left))
-			{
-				return returnValue + 1;
-			}
-			if (targetBoard.getX() < 6 && tunnelCard.getOpenTunnels().contains(Direction.Right))
-			{
-				return returnValue + 1;
-			}
-			if (verticalFit)
-			{
-				return 1;
-			}
-			return -1;
-		}
-
-		// jesli nie wie gdzie jest cel ale zmierza w kierunku kart celu
-		return 1;
+		return returnValue;
 	}
 
 	public List<SimpleDirectedWeightedGraph<State, DefaultWeightedEdge>> getKripkeGraphs()
@@ -833,7 +794,7 @@ public class KripkeModel
 						currentValue = kripkeGraphs.get(i).getEdgeWeight(edge);
 						// jesli stan jest prawdopodobny i gracz jest w tym
 						// stanie sabotazysta
-						if (currentValue >= getTreshold() && state2.isPlayerSaboteur(playerID))
+						if (currentValue >= this.treshold && state2.isPlayerSaboteur(playerID))
 						{
 							numberOfWorldsHesSaboteur++;
 						}

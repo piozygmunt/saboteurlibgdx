@@ -253,8 +253,15 @@ public class MenuStage extends Stage
 	 * @param saboteur
 	 *            Rola.
 	 */
-	public void setPlayerRole(final boolean saboteur)
+	public void setPlayerRole(final Boolean saboteur)
 	{
+		if(saboteur == null )
+		{
+			playersRoleLabel.setVisible(false);
+			roleLabel.setVisible(false);
+			return;
+			
+		}
 		playersRoleLabel.setVisible(true);
 		LabelStyle style = new LabelStyle(roleLabel.getStyle());
 

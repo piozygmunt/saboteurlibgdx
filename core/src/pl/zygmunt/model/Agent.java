@@ -1,5 +1,7 @@
 package pl.zygmunt.model;
 
+import java.util.List;
+
 /**
  * Abstrakcyjna kasa reprezentujaca agenta.
  * 
@@ -38,7 +40,7 @@ public abstract class Agent extends Player
 	 *            Obiekt reprezntuj¹cy aktualne ustawienie kart na planszy.
 	 * @return Obiekt reprezntuj¹cy podjêt¹ decyzjê (u¿yta karta oraz cel).
 	 */
-	public abstract Turn takeTurn(Player[] players, TunnelCard[][] board);
+	public abstract Turn takeTurn(List<Player> players, TunnelCard[][] board);
 
 	/**
 	 * Funkcja reprezentuj¹ca uaktualnienie modelu Kripkego dla danego agenta na
@@ -53,7 +55,7 @@ public abstract class Agent extends Player
 	 * @param agents
 	 *            Gracze bior¹cy udzia³ w rozgrywce.
 	 */
-	public abstract void updateKripke(Turn turn, int agentPlayed, TunnelCard[][] board, Player[] agents);
+	public abstract void updateKripke(Turn turn, int agentPlayed, TunnelCard[][] board, List<Player> agents);
 
 	/**
 	 * Funkcja zwracaj¹ca model Kripkego.
