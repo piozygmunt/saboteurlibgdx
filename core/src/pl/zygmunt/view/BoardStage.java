@@ -76,6 +76,11 @@ public class BoardStage extends Stage
 	{
 		return board.getTable();
 	}
+	
+	public ZoomableBoard getZoomableBoard()
+	{
+		return board;
+	}
 
 	/**
 	 * Wyczyszczenie danego pola do gry.

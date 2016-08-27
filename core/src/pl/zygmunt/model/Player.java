@@ -99,13 +99,31 @@ public class Player
 			// znamy cel
 			knowGoal[0] = 1;
 			// ustawienie karty ze z³otem
-			knowGoal[goalNumber + 1] = 1;
+			knowGoal[goalNumber ] = 1;
+			
+			switch(goalNumber)
+			{
+				case 1:
+					knowGoal[2] = 2;
+					knowGoal[3] = 2;
+					break;
+				case 2:
+					knowGoal[1] = 2;
+					knowGoal[3] = 2;
+					break;
+				case 3:
+					knowGoal[1] = 2;
+					knowGoal[2] = 2;
+					break;
+			}
+			
+			
 			return goalNumber;
 		}
 		// jesli z³ota nie ma (znaleziono kamien), aktualizuj cele
 		else
 		{
-			knowGoal[goalNumber + 1] = 2;
+			knowGoal[goalNumber ] = 2;
 			// jesli kamien jest pod pierwsza karta
 			if (knowGoal[1] == 2)
 			{
@@ -169,22 +187,4 @@ public class Player
 		return knowGoal[goalCard];
 	}
 
-	/**
-	 * Zwraca aktualny cel gracza. Jesli sabotazysta - skala, jesli krasnal-
-	 * zloto.
-	 * 
-	 * @return
-	 */
-	public int getGoal()
-	{
-		int goal = saboteur ? 2 : 1;
-		for (int i = 1; i < 4; i++)
-		{
-			if (knowGoal[i] == goal)
-			{
-				return i;
-			}
-		}
-		return 0;
-	}
 }

@@ -126,6 +126,45 @@ public class TunnelCard extends Card
 
 	}
 
+	
+	
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((openTunnels == null) ? 0 : openTunnels.hashCode());
+		result = prime * result + ((tunnels == null) ? 0 : tunnels.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TunnelCard other = (TunnelCard) obj;
+		if (openTunnels == null)
+		{
+			if (other.openTunnels != null)
+				return false;
+		}
+		else if (!openTunnels.equals(other.openTunnels))
+			return false;
+		if (tunnels == null)
+		{
+			if (other.tunnels != null)
+				return false;
+		}
+		else if (!tunnels.equals(other.tunnels))
+			return false;
+		return true;
+	}
+
 	@Override
 	public String toString()
 	{

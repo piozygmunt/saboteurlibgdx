@@ -98,6 +98,12 @@ public class Model
 		return board;
 	}
 
+	
+	public List<Player> getPlayers()
+	{
+		return players;
+	}
+ 	
 	public Model()
 	{
 
@@ -155,12 +161,12 @@ public class Model
 
 		saboteurs = new ArrayList<Boolean>();
 
-		for (int i = 0; i < GameProperties.numberOfDwarfs; ++i)
+		for (int i = 0; i < GameProperties.maxNumberOfDwarfs; ++i)
 		{
 			saboteurs.add(false);
 		}
 
-		for (int i = 0; i < GameProperties.numberOfSaboteurs; ++i)
+		for (int i = 0; i < GameProperties.maxNumberOfSaboteurs; ++i)
 		{
 			saboteurs.add(true);
 		}
@@ -458,7 +464,7 @@ public class Model
 			if (!((GoalCard) board[i * 2 + 2][10]).isDiscovered() && isGoalCardReachable(i * 2 + 2))
 			{
 				for (int j = 0; j < players.size(); ++j)
-					players.get(j).setGoal(i - 1, ((GoalCard) board[i * 2 + 2][10]).getGold());
+					players.get(j).setGoal(i, ((GoalCard) board[i * 2 + 2][10]).getGold());
 			}
 		}
 
@@ -554,4 +560,13 @@ public class Model
 		return false;
 	}
 
+	public int getGoldCardPosition()
+	{
+		return goldCardPosition;
+	}
+	
+	public GameResult getGameResult()
+	{
+		return gameResult;
+	}
 }

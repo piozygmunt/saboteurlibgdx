@@ -247,7 +247,7 @@ public class AgentSaboteur extends Agent
 			{
 			HashSet<Integer> possible_saboteurs = new HashSet<Integer>();
 
-			for (int i = 0; i < GameProperties.numberOfSaboteurs; ++i)
+			for (int i = 0; i < GameProperties.maxNumberOfSaboteurs; ++i)
 			{
 				// znajdz najmniej podejrzanego agenta
 				double suspicion[] = model.getLeastSuspicious(id, possible_saboteurs);

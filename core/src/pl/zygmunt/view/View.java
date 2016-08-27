@@ -216,7 +216,7 @@ public class View
 	 */
 	public int getSelectedCardID()
 	{
-		Cell<Actor> cell = screen.getUserStage().getUserTable().getCell(screen.getUserStage().getSelectedCard());
+		Cell<Actor> cell = screen.getUserStage().cardsTable().getCell(screen.getUserStage().getSelectedCard());
 		return cell.getColumn();
 	}
 
@@ -227,7 +227,7 @@ public class View
 	{
 		Actor selectedCard = screen.getUserStage().getSelectedCard();
 		screen.getUserStage().removeSelection();
-		lastPlayedCardsCell = screen.getUserStage().getUserTable().getCell(selectedCard);
+		lastPlayedCardsCell = screen.getUserStage().cardsTable().getCell(selectedCard);
 		lastPlayedCardsCell.clearActor();
 		lastPlayedCardsCell.padRight(0);
 

@@ -15,11 +15,11 @@ public class GameProperties
 	/**
 	 * Ilosc kopaczy.
 	 */
-	public static int numberOfDwarfs = 4;
+	public static int maxNumberOfDwarfs = 4;
 	/**
 	 * Ilosc sabotazystow.
 	 */
-	public static int numberOfSaboteurs = 2;
+	public static int maxNumberOfSaboteurs = 2;
 	/**
 	 * Poczatkowa ilosc kart u kazdego z graczy.
 	 */
@@ -51,32 +51,32 @@ public class GameProperties
 		{
 			case 3:
 				numberOfPlayers = players;
-				numberOfSaboteurs = 1;
-				numberOfDwarfs = 2;
+				maxNumberOfSaboteurs = 1;
+				maxNumberOfDwarfs = 2;
 				numberOfCards = 6;
 				break;
 			case 4:
 				numberOfPlayers = players;
-				numberOfSaboteurs = 1;
-				numberOfDwarfs = 3;
+				maxNumberOfSaboteurs = 1;
+				maxNumberOfDwarfs = 3;
 				numberOfCards = 6;
 				break;
 			case 5:
 				numberOfPlayers = players;
-				numberOfSaboteurs = 2;
-				numberOfDwarfs = 3;
+				maxNumberOfSaboteurs = 2;
+				maxNumberOfDwarfs = 3;
 				numberOfCards = 6;
 				break;
 			case 6:
 				numberOfPlayers = players;
-				numberOfSaboteurs = 2;
-				numberOfDwarfs = 4;
+				maxNumberOfSaboteurs = 2;
+				maxNumberOfDwarfs = 4;
 				numberOfCards = 5;
 				break;
 			case 7:
 				numberOfPlayers = players;
-				numberOfSaboteurs = 3;
-				numberOfDwarfs = 4;
+				maxNumberOfSaboteurs = 3;
+				maxNumberOfDwarfs = 4;
 				numberOfCards = 5;
 				break;
 

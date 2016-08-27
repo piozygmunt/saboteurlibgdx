@@ -1,6 +1,7 @@
 package pl.zygmunt.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -43,7 +44,7 @@ public class State
 	public List<Integer> getSaboteurs()
 	{
 		List<Integer> saboteursList = new ArrayList<Integer>();
-		for (int i = 0; i < GameProperties.numberOfPlayers; i++)
+		for (int i = 0; i < saboteurs.length; i++)
 		{
 			if (saboteurs[i])
 			{
@@ -85,4 +86,29 @@ public class State
 		}
 		return false;
 	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(saboteurs);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		State other = (State) obj;
+		if (!Arrays.equals(saboteurs, other.saboteurs))
+			return false;
+		return true;
+	}
+	
 }

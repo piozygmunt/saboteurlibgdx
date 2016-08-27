@@ -23,7 +23,7 @@ public abstract class StatesGenerator
 	 * @param numberOfPlayers
 	 * @return
 	 */
-	static List<State> generateAllPossibleStates(int numberOfPlayers)
+	public static List<State> generateAllPossibleStates(int numberOfPlayers)
 	{
 		int maxSaboteurs = 0, minSaboteurs = 0;
 		ArrayList<State> possibleStates = new ArrayList<State>();
@@ -67,9 +67,6 @@ public abstract class StatesGenerator
 			}
 
 		}
-
-		Gdx.app.log("StatesGenerator.generateAllPossibleStates", "Amount of possible states: " + possibleStates.size());
-
 		return possibleStates;
 
 	}
@@ -137,7 +134,7 @@ public abstract class StatesGenerator
 	 *            Rozmiar zbiorow wyjsciowy.
 	 * @return Lista wygenerowanych podzbiorow.
 	 */
-	public static List<Set<Integer>> getSubsets(List<Integer> superSet, int k)
+	private static List<Set<Integer>> getSubsets(List<Integer> superSet, int k)
 	{
 		List<Set<Integer>> res = new ArrayList<Set<Integer>>();
 		getSubsets(superSet, k, 0, new HashSet<Integer>(), res);

@@ -8,8 +8,6 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
@@ -72,6 +70,7 @@ public class MenuStage extends Stage
 	 * Tabela zawieracja graczy.
 	 */
 	private Table playersContainer;
+
 	private Texture blocked;
 	private Texture deblocked;
 	private Texture background;
@@ -222,7 +221,8 @@ public class MenuStage extends Stage
 		Table playerTable = playerCell.getActor();
 
 		Image newImage = blocked ? new Image(this.blocked) : new Image(this.deblocked);
-
+		newImage.setColor(blocked? Color.RED : Color.WHITE);
+		
 		playerTable.getCells().get(0).setActor(newImage);
 	}
 
@@ -346,6 +346,22 @@ public class MenuStage extends Stage
 		roleLabel.setStyle(labelStyle);
 
 	}
+	
+	public Table getPlayersContainer()
+	{
+		return playersContainer;
+	}
+	
+	public Texture getBlockedTexture()
+	{
+		return blocked;
+	}
+
+	public Texture getDeblockedTexture()
+	{
+		return deblocked;
+	}
+
 
 	public void dispose()
 	{

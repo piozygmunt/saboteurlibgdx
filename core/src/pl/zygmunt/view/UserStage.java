@@ -138,12 +138,6 @@ public class UserStage extends Stage
 		return selectedCard;
 	}
 
-	public Table getUserTable()
-	{
-		// TODO Auto-generated method stub
-		return cardsTable;
-	}
-
 	/**
 	 * Odwrocenie zaznaczonej karty.
 	 */

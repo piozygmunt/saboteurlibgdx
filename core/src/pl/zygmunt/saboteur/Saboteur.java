@@ -41,7 +41,7 @@ public class Saboteur extends Game
 			@Override
 			public void run()
 			{
-				controller.processEvents();
+				controller.processEvents(true);
 			}
 		}).start();
 		setScreen(view.getGameScreen());

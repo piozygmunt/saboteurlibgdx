@@ -56,6 +56,28 @@ public final class Controller
 	/** Referencja na kolejke zdarzen */
 	private final BlockingQueue<ApplicationEvent> bq;
 
+	
+	
+	public Model getModel()
+	{
+		return model;
+	}
+
+	public View getView()
+	{
+		return view;
+	}
+
+	public Map<Class<? extends ApplicationEvent>, ApplicationStrategy> getEventDictionary()
+	{
+		return eventDictionary;
+	}
+
+	public BlockingQueue<ApplicationEvent> getBq()
+	{
+		return bq;
+	}
+
 	/**
 	 * Konstruktor podstawowy przyjmuje referencje na : model, widok , kolejke
 	 * zdarzen.
@@ -105,28 +127,36 @@ public final class Controller
 	 * Jesli jakies jest to jest odbiera i odpowiednio reaguje ( wybiera
 	 * strategie ).
 	 */
-	public void processEvents()
+	public void processEvents(boolean inloop)
 	{
-		while (true)
+		do 
 		{
 			try
 			{
 				final ApplicationEvent evnt = bq.take();
 				final ApplicationStrategy strategy = eventDictionary.get(evnt.getClass());
-				Gdx.app.postRunnable(new Runnable()
+				if(inloop)
 				{
-					@Override
-					public void run()
+					Gdx.app.postRunnable(new Runnable()
 					{
-						strategy.execute(evnt);
-					}
-				});
+						@Override
+						public void run()
+						{
+							strategy.execute(evnt);
+						}
+					});
+				}
+				else 
+				{
+					strategy.execute(evnt);
+				}
+					
 			}
 			catch (InterruptedException e)
 			{
 				throw new RuntimeException(e);
 			}
-		}
+		}while(inloop);
 	}
 
 	/**
