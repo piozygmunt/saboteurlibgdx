@@ -220,4 +220,153 @@ public class ControllerTests
 			
 		});
 	}
+	
+	
+	@Test
+	public void eventProccesing4()
+	{
+		Gdx.app.postRunnable(new Runnable(){
+
+			@Override
+			public void run()
+			{
+				Set<Direction> tunnels = new HashSet<Direction>();
+				tunnels.add(Direction.Up);
+				tunnels.add(Direction.Left);
+				tunnels.add(Direction.Down);
+				
+				Set<Direction> openTunnels = new HashSet<Direction>();
+				openTunnels.add(Direction.Up);
+				openTunnels.add(Direction.Left);
+				openTunnels.add(Direction.Down);
+				
+				TunnelCard tunnelCard = new TunnelCard(tunnels,openTunnels);
+				
+				Table gameTable = view.getGameScreen().getBoardStage().getBoardTable();
+				
+				model.getActivePlayer().getCards().clear();
+				for(int i = 0 ; i < 6 ; ++i)
+					model.getActivePlayer().getCards().add((TunnelCard) tunnelCard.clone());
+				
+				view.drawCards(model.getActivePlayer().getCards());
+				
+				Assert.assertFalse(view.isCardSelected());
+				LibGdxTestRunner.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(1).getActor());
+				
+				controller.processEvents(false);
+				
+				Assert.assertTrue(view.isCardSelected());
+				Assert.assertEquals(1, view.getSelectedCardID());
+				Assert.assertFalse(view.getRotated());
+				
+				// na polu 5x2 nie ma jeszcze karty
+				Assert.assertFalse(gameTable.getCells().get(5 + 2*13).getActor() instanceof Image);
+						
+				LibGdxTestRunner.simulateClick(gameTable.getCells().get(5 + 2*13).getActor());
+				
+				controller.processEvents(false);
+				
+				// karta nie zostala umieszczona bo nie pasuje 
+				Assert.assertFalse(gameTable.getCells().get(5 + 2*13).getActor() instanceof Image);
+				
+				// rotacja
+				LibGdxTestRunner.simulateClick(view.getGameScreen().getMenuStage().getRotateButton());
+
+				controller.processEvents(false);
+				
+				LibGdxTestRunner.simulateClick(gameTable.getCells().get(5 + 2*13).getActor());
+				
+				controller.processEvents(false);
+				
+				// po rotacji karta zostala umieszczona 
+				Assert.assertTrue(gameTable.getCells().get(5 + 2*13).getActor() instanceof Image);
+				
+				// wycofanie ruchu
+				LibGdxTestRunner.simulateClick(view.getGameScreen().getMenuStage().getBackButton());
+
+				controller.processEvents(false);
+				
+				//sprawdzenie czy karta zostala usunieta
+				Assert.assertFalse(gameTable.getCells().get(5 + 2*13).getActor() instanceof Image);
+				
+				//zaznaczenie karty jeszcze raz
+				LibGdxTestRunner.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(1).getActor());
+				
+				controller.processEvents(false);
+				
+				//ulozenie karty jeszcze raz
+				LibGdxTestRunner.simulateClick(gameTable.getCells().get(5 + 2*13).getActor());
+				
+				controller.processEvents(false);
+							
+				// zatwierdzenie 
+				LibGdxTestRunner.simulateClick(view.getGameScreen().getMenuStage().getNextRoundButton());
+
+				controller.processEvents(false);
+				
+				// sprawdzamy, czy model zostal zauktualizowany (pamietajmy ze karta zostala odwrocona)
+				Assert.assertEquals(model.getBoard()[5][2], TunnelCard.createRotatedCard(tunnelCard));
+				
+			}
+			
+		});
+	}
+	
+	@Test
+	public void eventProccesing5()
+	{
+		Gdx.app.postRunnable(new Runnable(){
+
+			@Override
+			public void run()
+			{
+				model.initialize();
+				view.resetView();
+				// inicjalizaacja kart
+				BlockCard blockCard = new BlockCard();
+				DeblockCard deblockCard = new DeblockCard();
+				
+				//dodanie kart 
+				model.getActivePlayer().getCards().clear();
+				model.getActivePlayer().getCards().add((Card) deblockCard.clone());
+				model.getActivePlayer().getCards().add((Card) deblockCard.clone());
+				for(int i = 0 ; i < 4 ; ++i)
+					model.getActivePlayer().getCards().add((Card) blockCard.clone());
+				
+				view.drawCards(model.getActivePlayer().getCards());
+				
+				// sprawdzenie zaznaczenia i zaznaczenie
+				Assert.assertFalse(view.isCardSelected());
+				LibGdxTestRunner.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(3).getActor());
+				
+				controller.processEvents(false);
+				
+				// sprawdzenie koloru przy graczu 1 (bialy odblokowany, czerwony zablokowany)
+				Table table = (Table) view.getGameScreen().getMenuStage().getPlayersContainer().getCells().get(1).getActor();
+				Image image = (Image) table.getCells().get(0).getActor();
+				Assert.assertEquals(Color.WHITE, image.getColor());
+				
+				LibGdxTestRunner.simulateClick(image);
+				controller.processEvents(false);
+				
+				Assert.assertFalse(view.isCardSelected());
+				image = (Image) table.getCells().get(0).getActor();
+
+				// sprawdzenie czy widok zostal zauktualizowany
+				Assert.assertEquals( Color.RED, image.getColor());
+				
+				// sprawdzenie ze gracz nie byl zablokwany
+				Assert.assertFalse(model.getPlayers().get(1).getBlocked());
+				
+				//zatwierdzenie ruchu
+				LibGdxTestRunner.simulateClick(view.getGameScreen().getMenuStage().getNextRoundButton());
+				controller.processEvents(false);
+				
+				// sprawdzenie ze gracz zostal zablokowany po ruchu
+				Assert.assertTrue(model.getPlayers().get(1).getBlocked());
+				
+			}
+			
+		});
+	}
 }

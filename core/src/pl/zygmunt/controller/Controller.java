@@ -259,6 +259,10 @@ public final class Controller
 						model.setLastTurn(turn);
 						view.setBackButtonDisabled(false);
 					}
+					else
+					{
+						return;
+					}
 
 				}
 
