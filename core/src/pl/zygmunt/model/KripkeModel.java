@@ -29,12 +29,12 @@ public class KripkeModel
 	/**
 	 * Wartosc okresla kiedy stan uznajemy za mozliwy.
 	 */
-	private double treshold = 0.0;
+	private double initValue = 0.0;
+	
+	private double impossible = -999;
 	
 	private double changeDecisionFactor = 5.0;
-	
-	private double changeDecisionFactorTwoPlayers = 1.5;
-	
+		
 	private double changeOnBlock = 2.0;
 	
 	private double changeOnDeblock = 1.0;
@@ -89,13 +89,13 @@ public class KripkeModel
 							{
 								// stany sa bardziej prawdopodobne
 								kripkeGraphs.get(i).setEdgeWeight(kripkeGraphs.get(i).addEdge(state1, state2),
-										this.treshold + 2);
+										this.initValue );
 							}
 							else
 							{
 								// stany w ktorych nie jestesmy sabotazystami sa
 								// wrecz niemozliwe
-								kripkeGraphs.get(i).setEdgeWeight(kripkeGraphs.get(i).addEdge(state1, state2), -100);
+								kripkeGraphs.get(i).setEdgeWeight(kripkeGraphs.get(i).addEdge(state1, state2), this.impossible);
 							}
 						}
 					}
@@ -114,11 +114,11 @@ public class KripkeModel
 							{
 
 								kripkeGraphs.get(i).setEdgeWeight(kripkeGraphs.get(i).addEdge(state1, state2),
-										this.treshold + 2);
+										this.initValue );
 							}
 							else
 							{
-								kripkeGraphs.get(i).setEdgeWeight(kripkeGraphs.get(i).addEdge(state1, state2), -100);
+								kripkeGraphs.get(i).setEdgeWeight(kripkeGraphs.get(i).addEdge(state1, state2), this.impossible);
 							}
 						}
 					}
@@ -134,7 +134,7 @@ public class KripkeModel
 					{
 						if (state1 != state2)
 						{
-								kripkeGraphs.get(i).setEdgeWeight(kripkeGraphs.get(i).addEdge(state1, state2), 0);
+								kripkeGraphs.get(i).setEdgeWeight(kripkeGraphs.get(i).addEdge(state1, state2), this.initValue);
 						}
 					}
 				}
@@ -236,7 +236,7 @@ public class KripkeModel
 						// jesli maja rozna role
 						else
 						{
-							kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - this.changeDecisionFactorTwoPlayers * updateValue);
+							kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - updateValue);
 						}
 					}
 				}
@@ -498,7 +498,7 @@ public class KripkeModel
 						currentValue = kripkeGraphs.get((int) leastSuspcion[1]).getEdgeWeight(edge);
 
 						// jesli najmniej podejrzany agent uwaza ze stan jest mozliwy
-						if (currentValue >= this.treshold && !state1.equals(state2))
+						if (currentValue >= this.initValue && !state1.equals(state2))
 						{
 							reachable = true;
 							break;
@@ -574,7 +574,7 @@ public class KripkeModel
 				{
 					edge = kripkeGraphs.get(agentID).getEdge(state2, state1);
 					currentValue = kripkeGraphs.get(agentID).getEdgeWeight(edge);
-					if (currentValue >= this.treshold && !state1.equals(state2))
+					if (currentValue >= this.initValue && !state1.equals(state2))
 					{
 						reachable = true;
 						suspicions[GameProperties.numberOfPlayers]++;
@@ -660,7 +660,7 @@ public class KripkeModel
 					currentValue = kripkeGraphs.get(agentID).getEdgeWeight(edge);
 
 					// czy jest galaz pomiedzy stanami
-					if (currentValue >= this.treshold && state1 != state2)
+					if (currentValue >= this.initValue && state1 != state2)
 					{
 						reachable = true; // stan sie osiagalny
 						// zwiekszamy ilosc wszystkich osiagalnych stanow
@@ -794,7 +794,7 @@ public class KripkeModel
 						currentValue = kripkeGraphs.get(i).getEdgeWeight(edge);
 						// jesli stan jest prawdopodobny i gracz jest w tym
 						// stanie sabotazysta
-						if (currentValue >= this.treshold && state2.isPlayerSaboteur(playerID))
+						if (currentValue >= this.initValue && state2.isPlayerSaboteur(playerID))
 						{
 							numberOfWorldsHesSaboteur++;
 						}
@@ -809,7 +809,7 @@ public class KripkeModel
 			// jesli liczba 'swiatow' w ktorych nie jest sabotazysta jest
 			// mniejsza niz 1 i mniejsza niz liczba swiatow w ktorych jest
 			// sabotazystow
-			if (numberOfWorldsHesNotSaboteur <= 1 && numberOfWorldsHesSaboteur >= numberOfWorldsHesNotSaboteur)
+			if (numberOfWorldsHesNotSaboteur <= Math.floor(possibleStates.size()/2) && numberOfWorldsHesSaboteur >= numberOfWorldsHesNotSaboteur)
 			{
 				// dany agent go podejrzewa
 				numberOfAgentsSuspecting++;
@@ -829,12 +829,12 @@ public class KripkeModel
 
 	public double getTreshold()
 	{
-		return treshold;
+		return initValue;
 	}
 
 	public void setTreshold(double treshold)
 	{
-		this.treshold = treshold;
+		this.initValue = treshold;
 	}
 
 }
