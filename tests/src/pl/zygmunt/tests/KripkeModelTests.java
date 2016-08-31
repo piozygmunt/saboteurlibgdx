@@ -47,19 +47,19 @@ public class KripkeModelTests
 
 		// na krawedzi jest wartosc -100 -niemozliwy stan,bo agent wie ze jest
 		// kopaczem wiec nie moze byc sabotazysta
-		Assert.assertEquals(-100, ownGraphDwarf.getEdgeWeight(edge1), 0);
+		Assert.assertEquals(-999, ownGraphDwarf.getEdgeWeight(edge1), 0);
 
 		// na krawedzi wartosc 2 (stan jest mozliwy), agent wie ze juz kopaczem
 		// i taki jest prawdopodobny
-		Assert.assertEquals(2, ownGraphDwarf.getEdgeWeight(edge2), 0);
+		Assert.assertEquals(0, ownGraphDwarf.getEdgeWeight(edge2), 0);
 
 		// dla sabotazysty - przeciwnie
 		edge1 = ownGraphSaboteur.getEdge(state1, state2);
 		edge2 = ownGraphSaboteur.getEdge(state2, state1);
 
-		Assert.assertEquals(2, ownGraphSaboteur.getEdgeWeight(edge1), 0);
+		Assert.assertEquals(0, ownGraphSaboteur.getEdgeWeight(edge1), 0);
 
-		Assert.assertEquals(-100, ownGraphSaboteur.getEdgeWeight(edge2), 0);
+		Assert.assertEquals(-999, ownGraphSaboteur.getEdgeWeight(edge2), 0);
 
 		// graf innego gracza
 		SimpleDirectedWeightedGraph<State, DefaultWeightedEdge> otherGraphDwarf = kripke.getKripkeGraphs().get(1);
@@ -105,8 +105,8 @@ public class KripkeModelTests
 		DefaultWeightedEdge edge3 = otherGraphDwarf.getEdge(state1, state2);
 		DefaultWeightedEdge edge4 = otherGraphDwarf.getEdge(state2, state1);
 		
-		Assert.assertEquals(-100, ownGraphDwarf.getEdgeWeight(edge1), 0);
-		Assert.assertEquals(2, ownGraphDwarf.getEdgeWeight(edge2), 0);
+		Assert.assertEquals(-999, ownGraphDwarf.getEdgeWeight(edge1), 0);
+		Assert.assertEquals(0, ownGraphDwarf.getEdgeWeight(edge2), 0);
 		
 		Assert.assertEquals(0, otherGraphDwarf.getEdgeWeight(edge3), 0);
 		Assert.assertEquals(0, otherGraphDwarf.getEdgeWeight(edge4), 0);
@@ -114,8 +114,8 @@ public class KripkeModelTests
 		kripke.updateKripkeGraphs(0, 3);
 		
 		//wlasny graf sie nie zmienia
-		Assert.assertEquals(-100, ownGraphDwarf.getEdgeWeight(edge1), 0);
-		Assert.assertEquals(2, ownGraphDwarf.getEdgeWeight(edge2), 0);
+		Assert.assertEquals(-999, ownGraphDwarf.getEdgeWeight(edge1), 0);
+		Assert.assertEquals(0, ownGraphDwarf.getEdgeWeight(edge2), 0);
 		
 		//pozostale grafy zmieniaja wartosc
 		Assert.assertEquals(-15, otherGraphDwarf.getEdgeWeight(edge3), 0);
@@ -150,19 +150,62 @@ public class KripkeModelTests
 		DefaultWeightedEdge edge3 = otherGraphDwarf.getEdge(state1, state2);
 		DefaultWeightedEdge edge4 = otherGraphDwarf.getEdge(state2, state1);
 		
-		Assert.assertEquals(-100, ownGraphDwarf.getEdgeWeight(edge1), 0);
-		Assert.assertEquals(2, ownGraphDwarf.getEdgeWeight(edge2), 0);
+		Assert.assertEquals(-999, ownGraphDwarf.getEdgeWeight(edge1), 0);
+		Assert.assertEquals(0, ownGraphDwarf.getEdgeWeight(edge2), 0);
 		
 		Assert.assertEquals(0, otherGraphDwarf.getEdgeWeight(edge3), 0);
 		Assert.assertEquals(0, otherGraphDwarf.getEdgeWeight(edge4), 0);
 		
 		kripke.updateKripkeGraphs(0, 2, 3);
 		
-		Assert.assertEquals(-103, ownGraphDwarf.getEdgeWeight(edge1), 0);
-		Assert.assertEquals(5, ownGraphDwarf.getEdgeWeight(edge2), 0);
+		Assert.assertEquals(-1002, ownGraphDwarf.getEdgeWeight(edge1), 0);
+		Assert.assertEquals(3, ownGraphDwarf.getEdgeWeight(edge2), 0);
 		
 		Assert.assertEquals(-3, otherGraphDwarf.getEdgeWeight(edge3), 0);
 		Assert.assertEquals(3, otherGraphDwarf.getEdgeWeight(edge4), 0);
+		
+	}
+	
+	
+	@Test
+	public void updateKripkeModelTest3()
+	{
+		int numberOfPlyers = 3;
+
+		GameProperties.setAmountOfPlayers(numberOfPlyers);
+		GameProperties.setHumanPlayer(false);
+
+		List<State> possStates = StatesGenerator.generateAllPossibleStates(numberOfPlyers);
+
+		// kopacz
+		KripkeModel kripke = new KripkeModel(0, false, possStates);
+		
+		SimpleDirectedWeightedGraph<State, DefaultWeightedEdge> ownGraphDwarf = kripke.getKripkeGraphs().get(0);
+		SimpleDirectedWeightedGraph<State, DefaultWeightedEdge> otherGraphDwarf = kripke.getKripkeGraphs().get(1);
+
+		Assert.assertEquals(numberOfPlyers, kripke.getKripkeGraphs().size());
+		
+		State state1 = new State(new boolean[] { false, true, false });
+		State state2 = new State(new boolean[] { true, false, false });
+
+		DefaultWeightedEdge edge1 = ownGraphDwarf.getEdge(state1, state2);
+		DefaultWeightedEdge edge2 = ownGraphDwarf.getEdge(state2, state1);
+		
+		DefaultWeightedEdge edge3 = otherGraphDwarf.getEdge(state1, state2);
+		DefaultWeightedEdge edge4 = otherGraphDwarf.getEdge(state2, state1);
+		
+		Assert.assertEquals(-999, ownGraphDwarf.getEdgeWeight(edge1), 0);
+		Assert.assertEquals(0, ownGraphDwarf.getEdgeWeight(edge2), 0);
+		
+		Assert.assertEquals(0, otherGraphDwarf.getEdgeWeight(edge3), 0);
+		Assert.assertEquals(0, otherGraphDwarf.getEdgeWeight(edge4), 0);
+		
+		Assert.assertFalse(kripke.getSuspected(0));
+		
+		kripke.updateKripkeGraphs(0, -3);
+		
+		Assert.assertTrue(kripke.getSuspected(0));
+
 		
 	}
 

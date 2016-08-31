@@ -779,7 +779,7 @@ public class KripkeModel
 	{
 		int numberOfAgentsSuspecting = 0;
 		int numberOfWorldsHesSaboteur = 0;
-		int numberOfWorldsHesNotSaboteur = 0;
+		int numberOfPossWorlds = 0;
 		double currentValue;
 		DefaultWeightedEdge edge;
 		for (int i = 0; i < GameProperties.numberOfPlayers; i++)
@@ -788,39 +788,47 @@ public class KripkeModel
 			{
 				for (State state1 : possibleStates)
 				{
+
 					for (State state2 : possibleStates)
 					{
-						edge = kripkeGraphs.get(i).getEdge(state1, state2);
-						currentValue = kripkeGraphs.get(i).getEdgeWeight(edge);
-						// jesli stan jest prawdopodobny i gracz jest w tym
-						// stanie sabotazysta
-						if (currentValue >= this.initValue && state2.isPlayerSaboteur(playerID))
+
+						if(state1 != state2)
 						{
-							numberOfWorldsHesSaboteur++;
-						}
-						// w p.p.
-						else
-						{
-							numberOfWorldsHesNotSaboteur++;
+							edge = kripkeGraphs.get(i).getEdge(state2, state1);
+							currentValue = kripkeGraphs.get(i).getEdgeWeight(edge);
+							// jesli stan jest prawdopodobny i gracz jest w tym
+							// stanie sabotazysta
+							if (currentValue > this.initValue )
+							{
+
+								if(state1.isPlayerSaboteur(playerID))
+								{
+									numberOfWorldsHesSaboteur++;
+								}
+								numberOfPossWorlds++;
+								break;
+							}
 						}
 					}
 				}
 			}
+			
 			// jesli liczba 'swiatow' w ktorych nie jest sabotazysta jest
-			// mniejsza niz 1 i mniejsza niz liczba swiatow w ktorych jest
-			// sabotazystow
-			if (numberOfWorldsHesNotSaboteur <= Math.floor(possibleStates.size()/2) && numberOfWorldsHesSaboteur >= numberOfWorldsHesNotSaboteur)
+			// wieksza od polowy pradopodobnych swiatow
+			if (numberOfWorldsHesSaboteur > numberOfPossWorlds/2)
 			{
 				// dany agent go podejrzewa
 				numberOfAgentsSuspecting++;
 			}
 
-			numberOfWorldsHesNotSaboteur = 0;
 			numberOfWorldsHesSaboteur = 0;
+			numberOfPossWorlds = 0;
+
 		}
-		// jesli liczba podejrzewajacych gracy jest wieksza 2, gracz uznawany
+		
+		// jesli liczba podejrzewajacych gracy jest wieksza od polowy
 		// jest ogolnie za podejrzewanego
-		if (numberOfAgentsSuspecting >= 2)
+		if (numberOfAgentsSuspecting >= Math.floor(GameProperties.numberOfPlayers/2))
 		{
 			return true;
 		}

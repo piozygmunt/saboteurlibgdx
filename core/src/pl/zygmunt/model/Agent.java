@@ -18,7 +18,7 @@ public abstract class Agent extends Player
 	/**
 	 * Wartoœæ reprezentuj¹ca czy dana akcja jest warta wykonania.
 	 */
-	protected int treshold;
+	protected int minCardValue;
 
 	/**
 	 * Konstruktor klasy Agent.

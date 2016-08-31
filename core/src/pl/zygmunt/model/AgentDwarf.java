@@ -28,7 +28,7 @@ public class AgentDwarf extends Agent
 	public AgentDwarf(int id, List<State> possibleStates)
 	{
 		super(id);
-		treshold = 4;
+		minCardValue = 4;
 		model = new KripkeModel(id, false, possibleStates);
 	}
 
@@ -52,7 +52,7 @@ public class AgentDwarf extends Agent
 		}
 
 		CardScore bestScore = new CardScore();
-		bestScore.setScore(treshold);
+		bestScore.setScore(minCardValue);
 		int bestCard = 0;
 		Turn turn;
 		boolean turned = false;
@@ -81,7 +81,7 @@ public class AgentDwarf extends Agent
 
 		Card playCard;
 		// jesli najlepsza karta ma wynik wiekszy niz okreslony
-		if (bestScore.getScore() > treshold)
+		if (bestScore.getScore() > minCardValue)
 		{
 			if (turned)
 			{

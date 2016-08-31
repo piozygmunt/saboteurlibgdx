@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.Vector;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
@@ -50,6 +51,7 @@ public class Model
 	 * danej pozycji.
 	 */
 	private List<Boolean> saboteurs;
+
 	/**
 	 * Ostatnio wykonany ruch przez gracza (ludzkiego).
 	 */
@@ -214,6 +216,129 @@ public class Model
 		return new String("");
 	}
 
+	public Vector<Double> getAgentsAssumptions()
+	{
+		double currentValue;
+		DefaultWeightedEdge edge;
+		int stateCounter = 0;
+		boolean[] saboteurs = new boolean[this.saboteurs.size()];
+		boolean containsActual = false;
+		Vector<Double> result = new Vector<Double>();
+		
+		for(int i = 0; i < this.saboteurs.size(); ++i )
+			saboteurs[i] = this.saboteurs.get(i);
+		
+		State actualState = new State(saboteurs);
+			
+		for (Player player : players)
+		{
+			if (player instanceof Agent)
+			{
+				for (State state1 : possible_states)
+				{
+					for (State state2 : possible_states)
+					{
+						if (state2 != state1)
+						{
+							edge = ((Agent) player).getKripkeModel().getKripkeGraphs().get(player.getID())
+									.getEdge(state2, state1);
+							currentValue = ((Agent) player).getKripkeModel().getKripkeGraphs().get(player.getID())
+									.getEdgeWeight(edge);
+							if (currentValue > ((Agent) player).getKripkeModel().getTreshold())
+							{
+								if(state1.equals(actualState)) 
+								{
+									containsActual = true;
+								}
+								stateCounter++;
+								break;
+							}
+						}
+					}
+				}
+				result.add((double) stateCounter);
+				stateCounter = 0;
+				if(containsActual)
+				{
+					result.add(1.0);
+				}
+				else
+				{
+					result.add(1.0);
+				}
+			}
+		}
+		return result;
+
+	}
+	
+	public Vector<Double> getAgentsAssuptionsAboutOtherAgents()
+	{
+		double currentValue;
+		double currentValueInActualAgent;
+		DefaultWeightedEdge edge,edge2;
+		int stateCounter = 0;
+		int stateCounterActual = 0;
+		int stateCounterSame = 0;
+		boolean statePossible = false, stateActualPossible = false;
+		Vector<Double> result = new Vector<Double>();
+		
+		
+			
+		for (Player player : players)
+		{
+			for (Player player2 : players)
+			{
+				if (player2.getID() != player.getID())
+				{
+					for (State state1 : possible_states)
+					{
+						for (State state2 : possible_states)
+						{
+							if (state2 != state1)
+							{
+								edge = ((Agent) player).getKripkeModel().getKripkeGraphs().get(player2.getID())
+										.getEdge(state2, state1);
+								edge2 = ((Agent) player2).getKripkeModel().getKripkeGraphs().get(player2.getID())
+										.getEdge(state2, state1);
+								currentValue = ((Agent) player).getKripkeModel().getKripkeGraphs()
+										.get(player2.getID()).getEdgeWeight(edge);
+								currentValueInActualAgent = ((Agent) player2).getKripkeModel().getKripkeGraphs()
+										.get(player2.getID()).getEdgeWeight(edge2);
+								if (!statePossible && currentValue > ((Agent) player).getKripkeModel().getTreshold())
+								{
+									stateCounter++;
+									statePossible = true;
+								}
+								if(!stateActualPossible && currentValueInActualAgent > ((Agent) player2).getKripkeModel().getTreshold() )
+								{
+									stateCounterActual++;
+									stateActualPossible = true;
+								}
+								if( statePossible && stateActualPossible )
+								{
+									stateCounterSame++;
+									break;
+								}
+								
+							}
+						}
+						statePossible = stateActualPossible = false;
+					}
+					result.add((double) stateCounter);
+					result.add((double) stateCounterActual);
+					result.add(stateCounter > stateCounterActual ? ((double) stateCounterSame/stateCounter) : ((double) stateCounterSame/stateCounterActual));
+					stateCounter = stateCounterActual = stateCounterSame =0;
+					statePossible = stateActualPossible = false;
+				}
+
+
+			}
+			}
+		return result;
+		}
+
+	
 	/**
 	 * Wypisanie na konsoli rezultatow gry oraz przekonan agentow.
 	 */
@@ -568,5 +693,10 @@ public class Model
 	public GameResult getGameResult()
 	{
 		return gameResult;
+	}
+	
+	public List<Boolean> getSaboteurs()
+	{
+		return saboteurs;
 	}
 }

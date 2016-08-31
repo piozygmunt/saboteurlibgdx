@@ -33,7 +33,7 @@ public class AgentSaboteur extends Agent
 	public AgentSaboteur(int id, List<State> possibleState)
 	{
 		super(id);
-		treshold = 4;
+		minCardValue = 4;
 		model = new KripkeModel(id, true, possibleState);
 		sabotageOpenly = false;
 	}
@@ -54,7 +54,7 @@ public class AgentSaboteur extends Agent
 		}
 
 		CardScore bestScore = new CardScore();
-		bestScore.setScore(treshold);
+		bestScore.setScore(minCardValue);
 		int bestCard = 0;
 		Turn turn;
 		boolean turned = false;
@@ -80,7 +80,7 @@ public class AgentSaboteur extends Agent
 			}
 		}
 		Card playCard;
-		if (bestScore.getScore() > treshold)
+		if (bestScore.getScore() > minCardValue)
 		{
 			if (turned)
 			{

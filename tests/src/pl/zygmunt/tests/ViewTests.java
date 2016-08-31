@@ -32,12 +32,12 @@ import pl.zygmunt.events.ButtonBackClickedEvent;
 import pl.zygmunt.events.ButtonDiscardClickedEvent;
 import pl.zygmunt.events.ButtonNextPlayerClickedEvent;
 import pl.zygmunt.events.RotateButtonClickedEvent;
-import pl.zygmunt.testUtils.LibGdxTestRunner;
+import pl.zygmunt.testUtils.TestLibGDXHelper;
 import pl.zygmunt.view.MenuStage;
 import pl.zygmunt.view.View;
 import pl.zygmunt.view.ZoomableBoard;
 
-@RunWith(LibGdxTestRunner.class)
+@RunWith(TestLibGDXHelper.class)
 public class ViewTests
 {
 	BlockingQueue<ApplicationEvent> bq = new LinkedBlockingQueue<ApplicationEvent>();
@@ -106,7 +106,7 @@ public class ViewTests
 				
 				Assert.assertTrue(bq.isEmpty());
 				
-				LibGdxTestRunner.simulateClick(boardTable.getCells().get(0).getActor());
+				TestLibGDXHelper.simulateClick(boardTable.getCells().get(0).getActor());
 				
 				Assert.assertFalse(bq.isEmpty());
 				
@@ -144,10 +144,10 @@ public class ViewTests
 				
 				Assert.assertTrue(bq.isEmpty());
 				
-				LibGdxTestRunner.simulateClick(boardTable.getCells().get(0).getActor());
-				LibGdxTestRunner.simulateClick(boardTable.getCells().get(0).getActor());
-				LibGdxTestRunner.simulateClick(menuStage.getBackButton());
-				LibGdxTestRunner.simulateClick(menuStage.getDiscardButton());
+				TestLibGDXHelper.simulateClick(boardTable.getCells().get(0).getActor());
+				TestLibGDXHelper.simulateClick(boardTable.getCells().get(0).getActor());
+				TestLibGDXHelper.simulateClick(menuStage.getBackButton());
+				TestLibGDXHelper.simulateClick(menuStage.getDiscardButton());
 				
 				
 				Assert.assertFalse(bq.isEmpty());
@@ -197,12 +197,12 @@ public class ViewTests
 				
 				Assert.assertTrue(bq.isEmpty());
 				
-				LibGdxTestRunner.simulateClick(menuStage.getBackButton());
-				LibGdxTestRunner.simulateClick(menuStage.getDiscardButton());
-				LibGdxTestRunner.simulateClick(menuStage.getNextRoundButton());
-				LibGdxTestRunner.simulateClick(menuStage.getRotateButton());
-				LibGdxTestRunner.simulateClick(boardTable.getCells().get(0).getActor());
-				LibGdxTestRunner.simulateClick(boardTable.getCells().get(0).getActor());			
+				TestLibGDXHelper.simulateClick(menuStage.getBackButton());
+				TestLibGDXHelper.simulateClick(menuStage.getDiscardButton());
+				TestLibGDXHelper.simulateClick(menuStage.getNextRoundButton());
+				TestLibGDXHelper.simulateClick(menuStage.getRotateButton());
+				TestLibGDXHelper.simulateClick(boardTable.getCells().get(0).getActor());
+				TestLibGDXHelper.simulateClick(boardTable.getCells().get(0).getActor());			
 				
 				Assert.assertFalse(bq.isEmpty());
 				Assert.assertEquals(6, bq.size());

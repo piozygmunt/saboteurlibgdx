@@ -18,9 +18,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 
 
-public class LibGdxTestRunner extends BlockJUnit4ClassRunner
+public class TestLibGDXHelper extends BlockJUnit4ClassRunner
 {
-   public LibGdxTestRunner(Class<?> klass) throws InitializationError
+   public TestLibGDXHelper(Class<?> klass) throws InitializationError
    {
       super(klass);
    }
@@ -39,7 +39,7 @@ public class LibGdxTestRunner extends BlockJUnit4ClassRunner
       config.forceExit = false;
       Gdx.gl = mock(GL20.class);
       Gdx.gl20 = mock(GL20.class);
-      final LibGdxTestRunner runner = this;
+      final TestLibGDXHelper runner = this;
       LwjglApplication app = null;
 
       try

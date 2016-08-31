@@ -124,7 +124,6 @@ public abstract class DeckGenerator
 		{
 			deck.add((ViewCard) viewCard.clone());
 		}
-		System.out.println("Deck size : "  + deck.size());
 		Collections.shuffle(deck);
 		return deck;
 	}

@@ -24,10 +24,10 @@ import pl.zygmunt.model.DeblockCard;
 import pl.zygmunt.model.GameProperties;
 import pl.zygmunt.model.Model;
 import pl.zygmunt.model.TunnelCard;
-import pl.zygmunt.testUtils.LibGdxTestRunner;
+import pl.zygmunt.testUtils.TestLibGDXHelper;
 import pl.zygmunt.view.View;
 
-@RunWith(LibGdxTestRunner.class)
+@RunWith(TestLibGDXHelper.class)
 public class ControllerTests
 {
 	private BlockingQueue<ApplicationEvent> bq;
@@ -71,27 +71,27 @@ public class ControllerTests
 			public void run()
 			{				
 				Assert.assertFalse(view.isCardSelected());
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(1).getActor());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(1).getActor());
 				
 				controller.processEvents(false);
 				
 				Assert.assertTrue(view.isCardSelected());
 				Assert.assertEquals(1, view.getSelectedCardID());
 				
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(1).getActor());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(1).getActor());
 				
 				controller.processEvents(false);
 				
 				Assert.assertFalse(view.isCardSelected());
 				
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(2).getActor());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(2).getActor());
 				
 				controller.processEvents(false);
 				
 				Assert.assertTrue(view.isCardSelected());
 				Assert.assertEquals(2, view.getSelectedCardID());
 				
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(4).getActor());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(4).getActor());
 				
 				controller.processEvents(false);
 				
@@ -130,7 +130,7 @@ public class ControllerTests
 				view.drawCards(model.getActivePlayer().getCards());
 				
 				Assert.assertFalse(view.isCardSelected());
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(1).getActor());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(1).getActor());
 				
 				controller.processEvents(false);
 				
@@ -138,21 +138,21 @@ public class ControllerTests
 				Assert.assertEquals(1, view.getSelectedCardID());
 				Assert.assertFalse(view.getRotated());
 				
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getMenuStage().getRotateButton());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getMenuStage().getRotateButton());
 				
 				controller.processEvents(false);
 				
 				Assert.assertTrue(view.isCardSelected());
 				Assert.assertTrue(view.getRotated());	
 				
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getMenuStage().getRotateButton());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getMenuStage().getRotateButton());
 				
 				controller.processEvents(false);
 				
 				Assert.assertTrue(view.isCardSelected());
 				Assert.assertFalse(view.getRotated());	
 				
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(1).getActor());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(1).getActor());
 				
 				controller.processEvents(false);
 				
@@ -186,7 +186,7 @@ public class ControllerTests
 				
 				// sprawdzenie zaznaczenia i zaznaczenie
 				Assert.assertFalse(view.isCardSelected());
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(3).getActor());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(3).getActor());
 				
 				controller.processEvents(false);
 				
@@ -199,7 +199,7 @@ public class ControllerTests
 				Image image = (Image) table.getCells().get(0).getActor();
 				Assert.assertEquals(image.getColor(), Color.WHITE);
 				
-				LibGdxTestRunner.simulateClick(image);
+				TestLibGDXHelper.simulateClick(image);
 				controller.processEvents(false);
 				
 				Assert.assertFalse(view.isCardSelected());
@@ -208,7 +208,7 @@ public class ControllerTests
 				Assert.assertEquals(image.getColor(), Color.RED);
 				
 				
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getMenuStage().getBackButton());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getMenuStage().getBackButton());
 				
 				controller.processEvents(false);
 				
@@ -251,7 +251,7 @@ public class ControllerTests
 				view.drawCards(model.getActivePlayer().getCards());
 				
 				Assert.assertFalse(view.isCardSelected());
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(1).getActor());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(1).getActor());
 				
 				controller.processEvents(false);
 				
@@ -262,7 +262,7 @@ public class ControllerTests
 				// na polu 5x2 nie ma jeszcze karty
 				Assert.assertFalse(gameTable.getCells().get(5 + 2*13).getActor() instanceof Image);
 						
-				LibGdxTestRunner.simulateClick(gameTable.getCells().get(5 + 2*13).getActor());
+				TestLibGDXHelper.simulateClick(gameTable.getCells().get(5 + 2*13).getActor());
 				
 				controller.processEvents(false);
 				
@@ -270,11 +270,11 @@ public class ControllerTests
 				Assert.assertFalse(gameTable.getCells().get(5 + 2*13).getActor() instanceof Image);
 				
 				// rotacja
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getMenuStage().getRotateButton());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getMenuStage().getRotateButton());
 
 				controller.processEvents(false);
 				
-				LibGdxTestRunner.simulateClick(gameTable.getCells().get(5 + 2*13).getActor());
+				TestLibGDXHelper.simulateClick(gameTable.getCells().get(5 + 2*13).getActor());
 				
 				controller.processEvents(false);
 				
@@ -282,7 +282,7 @@ public class ControllerTests
 				Assert.assertTrue(gameTable.getCells().get(5 + 2*13).getActor() instanceof Image);
 				
 				// wycofanie ruchu
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getMenuStage().getBackButton());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getMenuStage().getBackButton());
 
 				controller.processEvents(false);
 				
@@ -290,17 +290,17 @@ public class ControllerTests
 				Assert.assertFalse(gameTable.getCells().get(5 + 2*13).getActor() instanceof Image);
 				
 				//zaznaczenie karty jeszcze raz
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(1).getActor());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(1).getActor());
 				
 				controller.processEvents(false);
 				
 				//ulozenie karty jeszcze raz
-				LibGdxTestRunner.simulateClick(gameTable.getCells().get(5 + 2*13).getActor());
+				TestLibGDXHelper.simulateClick(gameTable.getCells().get(5 + 2*13).getActor());
 				
 				controller.processEvents(false);
 							
 				// zatwierdzenie 
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getMenuStage().getNextRoundButton());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getMenuStage().getNextRoundButton());
 
 				controller.processEvents(false);
 				
@@ -337,7 +337,7 @@ public class ControllerTests
 				
 				// sprawdzenie zaznaczenia i zaznaczenie
 				Assert.assertFalse(view.isCardSelected());
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(3).getActor());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getUserStage().cardsTable().getCells().get(3).getActor());
 				
 				controller.processEvents(false);
 				
@@ -346,7 +346,7 @@ public class ControllerTests
 				Image image = (Image) table.getCells().get(0).getActor();
 				Assert.assertEquals(Color.WHITE, image.getColor());
 				
-				LibGdxTestRunner.simulateClick(image);
+				TestLibGDXHelper.simulateClick(image);
 				controller.processEvents(false);
 				
 				Assert.assertFalse(view.isCardSelected());
@@ -359,7 +359,7 @@ public class ControllerTests
 				Assert.assertFalse(model.getPlayers().get(1).getBlocked());
 				
 				//zatwierdzenie ruchu
-				LibGdxTestRunner.simulateClick(view.getGameScreen().getMenuStage().getNextRoundButton());
+				TestLibGDXHelper.simulateClick(view.getGameScreen().getMenuStage().getNextRoundButton());
 				controller.processEvents(false);
 				
 				// sprawdzenie ze gracz zostal zablokowany po ruchu
