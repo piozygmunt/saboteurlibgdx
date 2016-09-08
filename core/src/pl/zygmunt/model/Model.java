@@ -244,7 +244,7 @@ public class Model
 									.getEdge(state2, state1);
 							currentValue = ((Agent) player).getKripkeModel().getKripkeGraphs().get(player.getID())
 									.getEdgeWeight(edge);
-							if (currentValue > ((Agent) player).getKripkeModel().getTreshold())
+							if (currentValue >= ((Agent) player).getKripkeModel().getTreshold())
 							{
 								if(state1.equals(actualState)) 
 								{
@@ -305,12 +305,12 @@ public class Model
 										.get(player2.getID()).getEdgeWeight(edge);
 								currentValueInActualAgent = ((Agent) player2).getKripkeModel().getKripkeGraphs()
 										.get(player2.getID()).getEdgeWeight(edge2);
-								if (!statePossible && currentValue > ((Agent) player).getKripkeModel().getTreshold())
+								if (!statePossible && currentValue >= ((Agent) player).getKripkeModel().getTreshold())
 								{
 									stateCounter++;
 									statePossible = true;
 								}
-								if(!stateActualPossible && currentValueInActualAgent > ((Agent) player2).getKripkeModel().getTreshold() )
+								if(!stateActualPossible && currentValueInActualAgent >= ((Agent) player2).getKripkeModel().getTreshold() )
 								{
 									stateCounterActual++;
 									stateActualPossible = true;
@@ -362,7 +362,7 @@ public class Model
 									.getEdge(state2, state1);
 							currentValue = ((Agent) player).getKripkeModel().getKripkeGraphs().get(player.getID())
 									.getEdgeWeight(edge);
-							if (currentValue > ((Agent) player).getKripkeModel().getTreshold())
+							if (currentValue >= ((Agent) player).getKripkeModel().getTreshold())
 							{
 								System.out.print(state1 + ", ");
 								stateCounter++;
@@ -391,7 +391,7 @@ public class Model
 											.getEdge(state2, state1);
 									currentValue = ((Agent) player).getKripkeModel().getKripkeGraphs()
 											.get(player2.getID()).getEdgeWeight(edge);
-									if (currentValue > ((Agent) player).getKripkeModel().getTreshold())
+									if (currentValue >= ((Agent) player).getKripkeModel().getTreshold())
 									{
 										System.out.print(state1 + ", ");
 										stateCounter++;

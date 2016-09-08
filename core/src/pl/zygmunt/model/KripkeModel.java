@@ -32,9 +32,7 @@ public class KripkeModel
 	private double initValue = 0.0;
 	
 	private double impossible = -999;
-	
-	private double changeDecisionFactor = 5.0;
-		
+			
 	private double changeOnBlock = 2.0;
 	
 	private double changeOnDeblock = 1.0;
@@ -183,7 +181,7 @@ public class KripkeModel
 								// wartosc ujemna - sabotazysta
 								else
 								{
-									kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + this.changeDecisionFactor * updateValue);
+									kripkeGraphs.get(i).setEdgeWeight(edge, currentValue + 3.0 * updateValue);
 								}
 							}
 							// jesli jest sabotazysta
@@ -195,7 +193,7 @@ public class KripkeModel
 								}
 								else
 								{
-									kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - this.changeDecisionFactor * updateValue);
+									kripkeGraphs.get(i).setEdgeWeight(edge, currentValue - 3.0* updateValue);
 								}
 							}
 						}
@@ -509,8 +507,8 @@ public class KripkeModel
 				{
 					if (state1 != state2)
 					{
-						edge = kripkeGraphs.get((int) leastSuspcion[1]).getEdge(state2, state1);
-						currentValue = kripkeGraphs.get((int) leastSuspcion[1]).getEdgeWeight(edge);
+						edge = kripkeGraphs.get(agentID).getEdge(state2, state1);
+						currentValue = kripkeGraphs.get(agentID).getEdgeWeight(edge);
 						// ... wtedy zwieksz przekonania co do tego stanu
 						if (reachable)
 						{
@@ -837,7 +835,7 @@ public class KripkeModel
 
 	public double getTreshold()
 	{
-		return initValue;
+		return 0.0;
 	}
 
 	public void setTreshold(double treshold)

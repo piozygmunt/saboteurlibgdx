@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.badlogic.gdx.Gdx;
-
 /**
  * Abstrakcyjna klasa zawierajca statyczna funkcja potrzebne do generacji
  * wszystkich mozliwych stanow w grze.

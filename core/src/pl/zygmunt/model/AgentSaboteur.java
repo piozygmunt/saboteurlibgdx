@@ -528,7 +528,7 @@ public class AgentSaboteur extends Agent
 			return cardScore;
 		}
 		// sabotujemy otwarcie - szukamy tylko kart tuneli bez otwartych drog
-		if (numberOfOpenTunnels == 0)
+		else if (numberOfOpenTunnels == 0)
 		{
 			cardScore += 5;
 			// im wiekszy dystans tym lepiej
